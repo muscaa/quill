@@ -1,8 +1,10 @@
-package quill.core.pkg;
+package quill.core.pkg.remote;
 
 import java.util.List;
 
 import quill.core.QException;
+import quill.core.pkg.QPackage;
+import quill.core.pkg.QPackageManager;
 
 public interface QRemotePackageManager extends QPackageManager {
 	

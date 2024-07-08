@@ -5,13 +5,13 @@ import java.util.List;
 
 import quill.core.QException;
 
-public interface QPackageManager {
+public interface QPackageManager<V extends QPackage> {
 	
-	List<QPackage> resolve(List<QPackage> qpkgs) throws QException;
+	List<V> resolve(List<V> qpkgs) throws QException;
 	
 	void reload();
 	
-	QPackage get(String tag);
+	V get(String tag);
 	
-	Collection<QPackage> getPackages();
+	Collection<V> getPackages();
 }

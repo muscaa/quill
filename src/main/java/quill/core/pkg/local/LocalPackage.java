@@ -1,16 +1,19 @@
 package quill.core.pkg.local;
 
+import java.io.BufferedReader;
 import java.io.File;
-import java.nio.file.Files;
-import java.util.List;
+import java.io.FileReader;
+import java.io.IOException;
+import java.util.HashSet;
 import java.util.Set;
 
 import quill.core.QException;
-import quill.core.pkg.QPackage;
+import quill.core.pkg.QPackageInfoReader;
 import quill.core.pkg.QVersion;
 
-public class LocalPackage implements QPackage {
+public class LocalPackage implements QLocalPackage {
 	
+	private final File dir;
 	private final String author;
 	private final String id;
 	private final QVersion version;
@@ -18,19 +21,33 @@ public class LocalPackage implements QPackage {
 	private final String qClass;
 	
 	public LocalPackage(File dir) throws QException {
-		if (!dir.exists()) throw new QException("Package '" + dir.getName() + "' doesn't exist!");
+		File info = new File(dir, "qpkg.info");
+		if (!info.exists()) throw new QException("Package " + dir.getName() + " doesn't exist!");
 		
-		try {
-			List<String> lines = Files.readAllLines(new File(dir, "info.q").toPath());
-			this.author = lines.get(0);
-			this.id = lines.get(1);
-			this.version = new QVersion(lines.get(2));
-			String[] split = lines.get(3).split(",");
-			this.dependencies = split[0].equals("null") ? Set.of() : Set.of(lines.get(3).split(","));
-			this.qClass = lines.get(4);
-		} catch (Exception e) {
+		this.dir = dir;
+		
+		try (BufferedReader br = new BufferedReader(new FileReader(info))) {
+			QPackageInfoReader r = new QPackageInfoReader(br);
+			
+			author = r.required("author", "Property missing: author").String();
+			id = r.required("id", "Property missing: id").String();
+			version = new QVersion(r.optional("version", "0.0.0").String());
+			dependencies = new HashSet<>();
+			for (String s : r.optional("depends", "").String().split(",")) {
+				s = s.trim();
+				if (s.isEmpty()) continue;
+				
+				dependencies.add(s);
+			}
+			qClass = r.optional("class").String();
+		} catch (IOException e) {
 			throw new QException(e);
 		}
+	}
+	
+	@Override
+	public File getDir() {
+		return dir;
 	}
 	
 	@Override

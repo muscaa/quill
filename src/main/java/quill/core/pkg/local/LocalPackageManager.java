@@ -1,6 +1,8 @@
 package quill.core.pkg.local;
 
 import java.io.File;
+import java.lang.reflect.Method;
+import java.lang.reflect.Modifier;
 import java.util.ArrayList;
 import java.util.Collection;
 import java.util.HashMap;
@@ -13,34 +15,71 @@ import java.util.Set;
 
 import quill.core.QException;
 import quill.core.QFiles;
+import quill.core.QuillCore;
 import quill.core.pkg.QDependency;
-import quill.core.pkg.QLocalPackageManager;
-import quill.core.pkg.QPackage;
+import quill.core.pkg.QLibraryMain;
 
 public class LocalPackageManager implements QLocalPackageManager {
 	
-	private final Map<String, QPackage> packages = new HashMap<>();
-	private final Map<QPackage, String> packagesRev = new HashMap<>();
+	private final Map<String, QLocalPackage> packages = new HashMap<>();
+	private final Map<QLocalPackage, String> packagesRev = new HashMap<>();
+	private final Set<String> loaded = new HashSet<>();
 	
 	public LocalPackageManager() {
 		reload();
+		
+		loaded.add("fluff-loader");
+		loaded.add("quill-loader");
+		loaded.add("quill-core");
 	}
 	
 	@Override
-	public void load(List<QPackage> qpkgs) throws QException {
-		// TODO
+	public void load(List<QLocalPackage> qpkgs) throws QException {
+		List<QLocalPackage> resolved = resolve(qpkgs);
+		
+		for (QLocalPackage qpkg : resolved) {
+			String tag = packagesRev.get(qpkg);
+			if (loaded.contains(tag)) continue;
+			
+			File java = new File(qpkg.getDir(), "java");
+			if (!java.exists()) continue;
+			
+			QuillCore.LOADER.addFolder(java);
+			
+			if (qpkg.getQClass() != null) {
+				try {
+					Class<?> clazz = QuillCore.LOADER.loadClass(qpkg.getQClass());
+					
+			    	for (Method m : clazz.getDeclaredMethods()) {
+			            if (!m.isAnnotationPresent(QLibraryMain.class)) continue;
+			            if (!Modifier.isStatic(m.getModifiers())) continue;
+			            
+			            try {
+			                m.setAccessible(true);
+			                m.invoke(null);
+			            } catch (Exception e) {
+			                throw new QException(e);
+			            }
+			        }
+				} catch (ClassNotFoundException e) {
+					throw new QException(e);
+				}
+			}
+			
+			loaded.add(tag);
+		}
 	}
 	
 	@Override
-	public List<QPackage> resolve(List<QPackage> qpkgs) throws QException {
+	public List<QLocalPackage> resolve(List<QLocalPackage> qpkgs) throws QException {
 		if (qpkgs.isEmpty()) return List.of();
 		
-		Queue<QPackage> unresolved = new LinkedList<>(qpkgs);
+		Queue<QLocalPackage> unresolved = new LinkedList<>(qpkgs);
 		Set<String> newlyAdded = new HashSet<>();
 		Map<String, QDependency> deps = new HashMap<>();
 		
 		while (!unresolved.isEmpty()) {
-			QPackage qpkg = unresolved.poll();
+			QLocalPackage qpkg = unresolved.poll();
 			
 			String tag = packagesRev.get(qpkg);
 			if (tag == null) throw new QException("Package " + qpkg.getID() + " does not exist!");
@@ -52,7 +91,7 @@ public class LocalPackageManager implements QLocalPackageManager {
 				if (deps.containsKey(tagDep)) continue;
 				if (newlyAdded.contains(tagDep)) continue;
 				
-				QPackage qpkgDep = packages.get(tagDep);
+				QLocalPackage qpkgDep = packages.get(tagDep);
 				if (qpkgDep == null) throw new QException("Package " + tagDep + " does not exist!");
 				
 				unresolved.add(qpkgDep);
@@ -85,11 +124,11 @@ public class LocalPackageManager implements QLocalPackageManager {
     		if (dep.unresolved == 0) queue.add(dep);
     	}
     	
-    	List<QPackage> sorted = new ArrayList<>();
+    	List<QLocalPackage> sorted = new ArrayList<>();
     	
     	while (!queue.isEmpty()) {
     		QDependency current = queue.poll();
-    		sorted.add(current.qpkg);
+    		sorted.add((QLocalPackage) current.qpkg);
     		
     		for (QDependency dnt : current.dependents) {
     			if (--dnt.unresolved == 0) queue.add(dnt);
@@ -121,7 +160,7 @@ public class LocalPackageManager implements QLocalPackageManager {
 			for (File dir : QFiles.SYSTEM.listFiles()) {
 				if (!dir.isDirectory()) continue;
 				
-				QPackage pkg = new LocalPackage(dir);
+				QLocalPackage pkg = new LocalPackage(dir);
 				String tag = pkg.getID();
 				
 				packages.put(tag, pkg);
@@ -131,7 +170,7 @@ public class LocalPackageManager implements QLocalPackageManager {
 			for (File dir : QFiles.PACKAGES.listFiles()) {
 				if (!dir.isDirectory()) continue;
 				
-				QPackage pkg = new LocalPackage(dir);
+				QLocalPackage pkg = new LocalPackage(dir);
 				String tag = pkg.getAuthor() + "@" + pkg.getID();
 				
 				packages.put(tag, pkg);
@@ -143,16 +182,16 @@ public class LocalPackageManager implements QLocalPackageManager {
 	}
 	
 	@Override
-	public QPackage get(String tag) {
+	public QLocalPackage get(String tag) {
 		return packages.get(tag);
 	}
 	
 	@Override
-	public Collection<QPackage> getPackages() {
+	public Collection<QLocalPackage> getPackages() {
 		return packages.values();
 	}
     
-    public static boolean detectCycle(QDependency dep, Set<String> visited, Set<String> recursionStack) {
+    private static boolean detectCycle(QDependency dep, Set<String> visited, Set<String> recursionStack) {
         if (recursionStack.contains(dep.tag)) return true;
         if (visited.contains(dep.tag)) return false;
         
