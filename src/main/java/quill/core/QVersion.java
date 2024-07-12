@@ -1,6 +1,4 @@
-package quill.core.pkg;
-
-import quill.core.QException;
+package quill.core;
 
 public class QVersion {
 	

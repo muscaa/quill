@@ -1,12 +1,12 @@
-package quill.core.pkg;
+package quill.core.pkg.info;
 
 import quill.core.QException;
 
-public class QPackageInfoValue {
+public class PackageInfoValue {
     
     private final String value;
     
-    public QPackageInfoValue(String value) {
+    public PackageInfoValue(String value) {
         this.value = value;
     }
     

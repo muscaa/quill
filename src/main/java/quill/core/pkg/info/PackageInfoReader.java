@@ -1,4 +1,4 @@
-package quill.core.pkg;
+package quill.core.pkg.info;
 
 import java.io.BufferedReader;
 import java.io.IOException;
@@ -7,11 +7,11 @@ import java.util.Map;
 
 import quill.core.QException;
 
-public class QPackageInfoReader {
+public class PackageInfoReader {
 	
-    protected final Map<String, QPackageInfoValue> properties = new HashMap<>();
+    protected final Map<String, PackageInfoValue> properties = new HashMap<>();
     
-    public QPackageInfoReader(BufferedReader br) throws QException {
+    public PackageInfoReader(BufferedReader br) throws QException {
         try {
         	String line;
 			while ((line = readLine(br)) != null) {
@@ -33,26 +33,26 @@ public class QPackageInfoReader {
 			    String key = line.substring(0, space);
 			    String value = line.substring(space + 1).trim();
 			    
-			    properties.put(key, new QPackageInfoValue(value));
+			    properties.put(key, new PackageInfoValue(value));
 			}
 		} catch (IOException e) {
 			throw new QException(e);
 		}
     }
     
-    public QPackageInfoValue optional(String key) {
+    public PackageInfoValue optional(String key) {
         return optional(key, null);
     }
     
-    public QPackageInfoValue optional(String key, String defaultValue) {
-        return properties.containsKey(key) ? properties.get(key) : new QPackageInfoValue(defaultValue);
+    public PackageInfoValue optional(String key, String defaultValue) {
+        return properties.containsKey(key) ? properties.get(key) : new PackageInfoValue(defaultValue);
     }
     
-    public QPackageInfoValue required(String key, String exception) throws QException {
+    public PackageInfoValue required(String key, String exception) throws QException {
         return required(key, new QException(exception));
     }
     
-    public QPackageInfoValue required(String key, QException exception) throws QException {
+    public PackageInfoValue required(String key, QException exception) throws QException {
         if (!properties.containsKey(key)) throw exception;
         return properties.get(key);
     }

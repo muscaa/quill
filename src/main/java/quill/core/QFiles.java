@@ -22,10 +22,10 @@ public class QFiles {
 					.getPath();
 			String pathDecoded = URLDecoder.decode(path, "UTF-8");
 			
-			return new File(pathDecoded)
-					.getParentFile()
-					.getParentFile()
-					.getParentFile();
+			return new File(pathDecoded) // java
+					.getParentFile() // fluff-loader
+					.getParentFile() // system
+					.getParentFile(); // root
 		} catch (Exception e) {
 			throw new RuntimeException(e);
 		}

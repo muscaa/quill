@@ -2,7 +2,9 @@ package quill.core.pkg;
 
 import java.util.Set;
 
-public interface QPackage {
+import quill.core.QVersion;
+
+public interface IPackage {
 	
     String getAuthor();
     
@@ -12,5 +14,7 @@ public interface QPackage {
     
     Set<String> getDependencies();
     
-    String getQClass();
+    String getMainClass();
+    
+    PackageInfo getInfo();
 }
