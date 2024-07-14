@@ -3,7 +3,7 @@ package quill.core.pkg;
 import java.util.LinkedList;
 import java.util.List;
 
-public class ResolvedPackage<P extends IPackage, R extends IPackageRepository<P>> {
+public class ResolvedPackage<P extends IPackage, R extends IPackageRepository<P, R>> {
 	
 	public final List<ResolvedPackage> dependents = new LinkedList<>();
 	public final List<ResolvedPackage> dependencies = new LinkedList<>();

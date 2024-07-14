@@ -2,12 +2,16 @@ package quill.core.pkg.local;
 
 import java.util.ArrayList;
 import java.util.Collection;
+import java.util.Comparator;
 import java.util.HashSet;
-import java.util.LinkedList;
 import java.util.List;
+import java.util.NavigableMap;
 import java.util.Set;
+import java.util.TreeMap;
 
 import quill.core.QException;
+import quill.core.pkg.IPackage;
+import quill.core.pkg.IPackageFilter;
 import quill.core.pkg.PackageResolver;
 import quill.core.pkg.ResolvedPackage;
 import quill.core.pkg.local.repositories.LocalPackagesPackageRepository;
@@ -25,8 +29,6 @@ public class LocalPackageManager implements ILocalPackageManager {
 		loaded.add("fluff-loader");
 		loaded.add("quill-loader");
 		loaded.add("quill-core");
-		
-		reload();
 	}
 	
 	@Override
@@ -36,20 +38,9 @@ public class LocalPackageManager implements ILocalPackageManager {
 		for (ResolvedPackage<ILocalPackage, ILocalPackageRepository> r : resolved) {
 			if (loaded.contains(r.tag)) continue;
 			
-			r.repository.load(r.pkg);
+			r.repository.load(r);
 			
 			loaded.add(r.tag);
-		}
-	}
-	
-	@Override
-	public void reload() {
-		try {
-			for (ILocalPackageRepository repo : repositories) {
-				repo.reload();
-			}
-		} catch (QException e) {
-			throw new RuntimeException(e);
 		}
 	}
 	
@@ -59,21 +50,25 @@ public class LocalPackageManager implements ILocalPackageManager {
 	}
 	
 	@Override
-	public Collection<ILocalPackage> getPackages() {
-		List<ILocalPackage> list = new LinkedList<>();
-		for (ILocalPackageRepository repo : repositories) {
-			repo.getPackages(list);
-		}
-		return list;
+	public NavigableMap<ILocalPackage, ILocalPackageRepository> getPackages() {
+		return filter((IPackageFilter<ILocalPackage, ILocalPackageRepository>) null);
 	}
 	
 	@Override
-	public ILocalPackage get(String tag) {
+	public NavigableMap<ILocalPackage, ILocalPackageRepository> filter(IPackageFilter<ILocalPackage, ILocalPackageRepository> filter) {
+		NavigableMap<ILocalPackage, ILocalPackageRepository> map = new TreeMap<>(Comparator.comparing(IPackage::getID));
 		for (ILocalPackageRepository repo : repositories) {
-			ILocalPackage pkg = repo.get(tag);
-			
-			if (pkg != null) return pkg;
+			repo.filter(filter, map);
 		}
-		return null;
+		return map;
+	}
+	
+	@Override
+	public NavigableMap<ILocalPackage, ILocalPackageRepository> filter(String tag) {
+		return filter((p, r) -> {
+        	String pkgTag = r.getTag(p);
+        	
+        	return pkgTag.equals(tag);
+		});
 	}
 }

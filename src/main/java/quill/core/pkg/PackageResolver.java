@@ -6,6 +6,7 @@ import java.util.HashSet;
 import java.util.LinkedList;
 import java.util.List;
 import java.util.Map;
+import java.util.NavigableMap;
 import java.util.Queue;
 import java.util.Set;
 
@@ -13,7 +14,7 @@ import quill.core.QException;
 
 public class PackageResolver {
 	
-	public static <P extends IPackage, R extends IPackageRepository<P>> List<ResolvedPackage<P, R>> resolve(IPackageManager<P, R> manager, Collection<String> tags) throws QException {
+	public static <P extends IPackage, R extends IPackageRepository<P, R>> List<ResolvedPackage<P, R>> resolve(IPackageManager<P, R> manager, Collection<String> tags) throws QException {
 		if (tags.isEmpty()) return List.of();
         
         Queue<String> unresolved = new LinkedList<>();
@@ -28,17 +29,12 @@ public class PackageResolver {
 	        while (!unresolved.isEmpty()) {
 	            String tag = unresolved.poll();
 	            
-	            R repository = null;
-	            P pkg = null;
-	    		for (R repo : manager.getRepositories()) {
-	    			pkg = repo.get(tag);
-	    			
-	    			if (pkg != null) {
-	    				repository = repo;
-	    				break;
-	    			}
-	    		}
-	            if (pkg == null) throw new QException("Package " + tag + " does not exist!");
+	            NavigableMap<P, R> map = manager.filter(tag);
+	            if (map.size() > 1) throw new QException("Found multiple packages for tag: " + tag);
+	            if (map.isEmpty()) throw new QException("Package " + tag + " does not exist!");
+	            
+	            R repository = map.firstEntry().getValue();
+	            P pkg = map.firstEntry().getKey();
 	            
                 ResolvedPackage<P, R> r = new ResolvedPackage<>(repository, pkg);
                 if (resolved.containsKey(r.tag)) throw new QException("Overlapping package tag: " + r.tag);
@@ -114,7 +110,7 @@ public class PackageResolver {
         return sorted;
 	}
 	
-    public static <P extends IPackage, R extends IPackageRepository<P>> boolean detectCycle(ResolvedPackage<P, R> r, Set<String> visited, Set<String> stack) {
+    public static <P extends IPackage, R extends IPackageRepository<P, R>> boolean detectCycle(ResolvedPackage<P, R> r, Set<String> visited, Set<String> stack) {
         if (stack.contains(r.tag)) return true;
         if (visited.contains(r.tag)) return false;
         

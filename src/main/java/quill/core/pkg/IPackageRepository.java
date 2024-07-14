@@ -1,16 +1,10 @@
 package quill.core.pkg;
 
-import java.util.List;
+import java.util.Map;
 
-import quill.core.QException;
-
-public interface IPackageRepository<P extends IPackage> {
+public interface IPackageRepository<P extends IPackage, R extends IPackageRepository<P, R>> {
 	
-	void reload() throws QException;
+	void filter(IPackageFilter<P, R> filter, Map<P, R> map);
 	
-	void getPackages(List<P> list);
-	
-	P get(String tag);
-    
-    String getTag(P pkg);
+	String getTag(P pkg);
 }

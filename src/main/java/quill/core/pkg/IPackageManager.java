@@ -1,14 +1,15 @@
 package quill.core.pkg;
 
 import java.util.Collection;
+import java.util.NavigableMap;
 
-public interface IPackageManager<P extends IPackage, R extends IPackageRepository<P>> {
-	
-	void reload();
+public interface IPackageManager<P extends IPackage, R extends IPackageRepository<P, R>> {
 	
 	Collection<R> getRepositories();
 	
-	Collection<P> getPackages();
+	NavigableMap<P, R> getPackages();
 	
-	P get(String tag);
+	NavigableMap<P, R> filter(IPackageFilter<P, R> filter);
+	
+	NavigableMap<P, R> filter(String tag);
 }

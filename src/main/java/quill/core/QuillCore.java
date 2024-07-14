@@ -16,7 +16,7 @@ public class QuillCore {
 	
 	public static void launch(String tag, String[] args) throws Exception {
 		LOCAL.load(List.of(tag));
-		ILocalPackage pkg = LOCAL.get(tag);
+		ILocalPackage pkg = LOCAL.filter(tag).firstKey();
 		
 		Class<?> clazz = LOADER.loadClass(pkg.getMainClass());
 		
