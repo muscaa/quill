@@ -14,7 +14,7 @@ import quill.core.QException;
 
 public class PackageResolver {
 	
-	public static <P extends IPackage, R extends IPackageRepository<P, R>> List<ResolvedPackage<P, R>> resolve(IPackageManager<P, R> manager, Collection<String> tags) throws QException {
+	public static <P extends IPackage, R extends IPackageRepository<P, R>> List<ResolvedPackage<P, R>> resolve(AbstractPackageManager<P, R> manager, Collection<String> tags) throws QException {
 		if (tags.isEmpty()) return List.of();
         
         Queue<String> unresolved = new LinkedList<>();

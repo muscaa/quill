@@ -10,7 +10,6 @@ import quill.core.QFiles;
 import quill.core.QuillCore;
 import quill.core.pkg.IPackageFilter;
 import quill.core.pkg.PackageMain;
-import quill.core.pkg.ResolvedPackage;
 import quill.core.pkg.local.ILocalPackage;
 import quill.core.pkg.local.ILocalPackageRepository;
 import quill.core.pkg.local.LocalPackage;
@@ -18,17 +17,17 @@ import quill.core.pkg.local.LocalPackage;
 public class LocalPackagesPackageRepository implements ILocalPackageRepository {
 	
 	@Override
-	public void load(ResolvedPackage<ILocalPackage, ILocalPackageRepository> r) throws QException {
-		File dir = new File(QFiles.PACKAGES, r.tag);
+	public void load(ILocalPackage pkg) throws QException {
+		File dir = new File(QFiles.PACKAGES, getTag(pkg));
 		
 		File java = new File(dir, "java");
 		if (!java.exists()) return;
 		
 		QuillCore.LOADER.addFolder(java);
 		
-		if (r.pkg.getMainClass() != null) {
+		if (pkg.getMainClass() != null) {
 			try {
-				Class<?> clazz = QuillCore.LOADER.loadClass(r.pkg.getMainClass());
+				Class<?> clazz = QuillCore.LOADER.loadClass(pkg.getMainClass());
 				
 		    	for (Method m : clazz.getDeclaredMethods()) {
 		            if (!m.isAnnotationPresent(PackageMain.class)) continue;
