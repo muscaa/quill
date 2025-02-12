@@ -1,21 +1,146 @@
-plugins {
-    id "com.github.muscaa.fluff-gradle" version "1.0.12"
+allprojects {
+	apply plugin: "eclipse"
+	apply plugin: "idea"
+	
+	idea {
+		module {
+			outputDir file("build/classes/java/main")
+			testOutputDir file("build/classes/java/test")
+		}
+	}
 }
 
-fluff {
-	include = [
-		"LICENSE": "META-INF/LICENSE",
-		"NOTICE": "META-INF/NOTICE"
-	]
+configure(subprojects) {
+	apply plugin: "java-library"
+	apply plugin: "maven-publish"
 }
 
-repositories {
-    mavenCentral()
-    maven { url "https://jitpack.io" }
-}
-
-dependencies {
-	api("com.github.muscaa:fluff-loader:1.0.+") {
-        exclude group: "com.github.muscaa", module: "fluff-core"
+subprojects {
+    beforeEvaluate {
+    	[compileJava, compileTestJava]*.options*.encoding = "UTF-8"
+    	
+    	sourceCompatibility = 17
+		targetCompatibility = 17
+		
+		ext.setupVersion = "v1"
+    	
+        repositories {
+			mavenCentral()
+			maven { url "https://jitpack.io" }
+		}
+		
+		sourceSets {
+		    scripts {
+		        resources {
+		            srcDirs = [ "src/main/scripts" ]
+		        }
+		    }
+		}
+		
+		configurations {
+			// required at compile & runtime, not included, not published
+			provided {
+				canBeResolved = true
+			    canBeConsumed = true
+			}
+			
+			// not required at compile & runtime, included, not published
+			embedded {
+				canBeResolved = true
+			    canBeConsumed = true
+			}
+			
+			// required at compile & runtime, included, published
+		    export {
+			    canBeResolved = true
+			    canBeConsumed = true
+		    }
+		    
+		    // required at compile & runtime, included, not published
+		    internal {
+			    canBeResolved = true
+			    canBeConsumed = true
+		    }
+		    
+		    // shaded dependencies
+		    shade {
+				canBeResolved = true
+			    canBeConsumed = true
+			}
+		    
+		    compileClasspath.extendsFrom(provided)
+		    runtimeClasspath.extendsFrom(provided)
+		    testCompileClasspath.extendsFrom(provided)
+		    testRuntimeClasspath.extendsFrom(provided)
+		    
+		    api.extendsFrom(export)
+		    provided.extendsFrom(internal)
+		    provided.extendsFrom(shade)
+		}
+    }
+    
+    afterEvaluate {
+        eclipse.project.name = "${projectName}-${subName}"
+        
+		jar {
+			into("META-INF") {
+	            from("${rootProject.projectDir}/LICENSE")
+	            from("${rootProject.projectDir}/NOTICE")
+	        }
+	        
+	        duplicatesStrategy(DuplicatesStrategy.EXCLUDE)
+			dependsOn configurations.shade
+			from {
+				configurations.shade.collect {
+					it.isDirectory() ? it : zipTree(it)
+				}
+			}
+		}
+		
+        def m2RepoDir = new File(System.getProperty("user.home"), ".m2/repository")
+        def groupDir = new File(m2RepoDir, project.group.replace('.', '/'))
+        def publishDir = new File(groupDir, "${project.name}/${project.version}")
+		
+		tasks.register("bundle", Zip) {
+		    destinationDirectory.set(publishDir)
+		    archiveFileName.set("bundle.zip")
+		    
+		    into("java") {
+		    	from(zipTree(tasks.named("jar").get().archiveFile))
+		    }
+		    
+		    into("scripts") {
+		    	from(sourceSets.scripts.resources)
+		    }
+		    
+		    // quill-package.json
+		}
+		
+		tasks.register("setup") {
+		    doLast {
+	            def file = new File(publishDir, "setup.war")
+	            file.text = setupVersion
+	            
+	            def json = new File(publishDir, "quillpackage.json")
+	            json.text = '{"version":1}'
+		    }
+		}
+		
+		tasks.named("publishToMavenLocal") {
+		    finalizedBy "bundle", "setup"
+		}
+		
+		java {
+			withSourcesJar()
+			withJavadocJar()
+		}
+		
+		publishing {
+			publications {
+				maven(MavenPublication) {
+					from components.java
+				}
+			}
+		}
     }
 }

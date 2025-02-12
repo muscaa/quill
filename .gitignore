@@ -1,13 +1,28 @@
-# Hidden Gradle & IDE dirs
-/.gradle/
-/.settings/
-/.idea/
-
-# Gradle & IDE dirs
+## Build:
 /bin/
 /build/
-/run/
+/bootstrap/bin/
+/bootstrap/build/
+/installer/bin/
+/installer/build/
+/core/bin/
+/core/build/
 
-# Hidden IDE files
-/.classpath
-/.project
+## Gradle:
+.gradle/
+
+## Java:
+*.class
+
+## IntelliJ:
+.idea/
+
+## Eclipse:
+.settings/
+.classpath
+.project
+*.launch
+
+## OS:
+.DS_Store
+Thumbs.db

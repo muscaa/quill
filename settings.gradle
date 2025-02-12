@@ -1,7 +1,5 @@
-pluginManagement {
-    repositories {
-        maven { url "https://jitpack.io" }
-    }
-}
+// subprojects
 
-rootProject.name = "quill-core"
+include "bootstrap"
+include "installer"
+include "core"
