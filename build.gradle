@@ -23,6 +23,15 @@ subprojects {
 		targetCompatibility = 17
 		
 		ext.setupVersion = "v1"
+		ext.quillPackage = [
+			author: "muscaa",
+			id: "quill-bootstrap",
+			version: project.version,
+			mainClass: null,
+			depends: [
+				"muscaa@quill-core"
+			],
+		]
     	
         repositories {
 			mavenCentral()
@@ -112,17 +121,16 @@ subprojects {
 		    into("scripts") {
 		    	from(sourceSets.scripts.resources)
 		    }
-		    
-		    // quill-package.json
 		}
 		
 		tasks.register("setup") {
 		    doLast {
-	            def file = new File(publishDir, "setup.war")
-	            file.text = setupVersion
+	            def setup = new File(publishDir, "setup.war")
+	            setup.text = setupVersion
 	            
-	            def json = new File(publishDir, "quillpackage.json")
-	            json.text = '{"version":1}'
+	            def qpkg = new File(publishDir, "quill-package.war")
+	            def quillPackageJson = groovy.json.JsonOutput.toJson(quillPackage)
+	            qpkg.text = groovy.json.JsonOutput.prettyPrint(quillPackageJson)
 		    }
 		}
 		
