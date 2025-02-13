@@ -22,7 +22,6 @@ subprojects {
     	sourceCompatibility = 17
 		targetCompatibility = 17
 		
-		ext.setupVersion = "v1"
 		ext.quillPackage = [
 			author: "muscaa",
 			id: "quill-bootstrap",
@@ -110,9 +109,15 @@ subprojects {
         def groupDir = new File(m2RepoDir, project.group.replace('.', '/'))
         def publishDir = new File(groupDir, "${project.name}/${project.version}")
 		
-		tasks.register("bundle", Zip) {
+		tasks.register("package", Zip) {
+			doLast {
+	            def file = new File(publishDir, "quill-package.war")
+	            def quillPackageJson = groovy.json.JsonOutput.toJson(quillPackage)
+	            file.text = groovy.json.JsonOutput.prettyPrint(quillPackageJson)
+		    }
+			
 		    destinationDirectory.set(publishDir)
-		    archiveFileName.set("bundle.zip")
+		    archiveFileName.set("quill-package.zip")
 		    
 		    into("java") {
 		    	from(zipTree(tasks.named("jar").get().archiveFile))
@@ -123,19 +128,8 @@ subprojects {
 		    }
 		}
 		
-		tasks.register("setup") {
-		    doLast {
-	            def setup = new File(publishDir, "setup.war")
-	            setup.text = setupVersion
-	            
-	            def qpkg = new File(publishDir, "quill-package.war")
-	            def quillPackageJson = groovy.json.JsonOutput.toJson(quillPackage)
-	            qpkg.text = groovy.json.JsonOutput.prettyPrint(quillPackageJson)
-		    }
-		}
-		
 		tasks.named("publishToMavenLocal") {
-		    finalizedBy "bundle", "setup"
+		    finalizedBy "package"
 		}
 		
 		java {
