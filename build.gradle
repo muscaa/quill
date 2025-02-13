@@ -47,25 +47,13 @@ subprojects {
 		
 		configurations {
 			// required at compile & runtime, not included, not published
-			provided {
-				canBeResolved = true
-			    canBeConsumed = true
-			}
-			
-			// not required at compile & runtime, included, not published
-			embedded {
+			require {
 				canBeResolved = true
 			    canBeConsumed = true
 			}
 			
 			// required at compile & runtime, included, published
-		    export {
-			    canBeResolved = true
-			    canBeConsumed = true
-		    }
-		    
-		    // required at compile & runtime, included, not published
-		    internal {
+		    include {
 			    canBeResolved = true
 			    canBeConsumed = true
 		    }
@@ -76,14 +64,13 @@ subprojects {
 			    canBeConsumed = true
 			}
 		    
-		    compileClasspath.extendsFrom(provided)
-		    runtimeClasspath.extendsFrom(provided)
-		    testCompileClasspath.extendsFrom(provided)
-		    testRuntimeClasspath.extendsFrom(provided)
+		    compileClasspath.extendsFrom(require)
+		    runtimeClasspath.extendsFrom(require)
+		    testCompileClasspath.extendsFrom(require)
+		    testRuntimeClasspath.extendsFrom(require)
 		    
-		    api.extendsFrom(export)
-		    provided.extendsFrom(internal)
-		    provided.extendsFrom(shade)
+		    api.extendsFrom(include)
+		    require.extendsFrom(shade)
 		}
     }
     
@@ -119,8 +106,14 @@ subprojects {
 		    destinationDirectory.set(publishDir)
 		    archiveFileName.set("quill-package.zip")
 		    
-		    into("java") {
+		    into("java/main") {
 		    	from(zipTree(tasks.named("jar").get().archiveFile))
+		    }
+		    
+		    configurations.include.each { file ->
+		        from(file.isDirectory() ? file : zipTree(file)) {
+		            into("java/" + file.name.replaceAll(".jar", ""))
+		        }
 		    }
 		    
 		    into("scripts") {

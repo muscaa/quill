@@ -1,7 +1,4 @@
 ext.subName = "core"
 
 dependencies {
-	shade("com.github.muscaa:fluff-loader:1.0.11") {
-		exclude group: "com.github.muscaa", module: "fluff-core"
-	}
 }

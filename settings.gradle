@@ -1,5 +1,4 @@
 // subprojects
 
 include "bootstrap"
-include "installer"
 include "core"
