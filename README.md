@@ -1,1 +1,1 @@
-# quill-core
+# quill

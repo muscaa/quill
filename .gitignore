@@ -1,12 +1,6 @@
 ## Build:
 /bin/
 /build/
-/bootstrap/bin/
-/bootstrap/build/
-/installer/bin/
-/installer/build/
-/core/bin/
-/core/build/
 
 ## Gradle:
 .gradle/

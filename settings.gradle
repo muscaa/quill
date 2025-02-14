@@ -1,4 +1,1 @@
-// subprojects
-
-include "bootstrap"
-include "core"
+rootProject.name = "quill"
