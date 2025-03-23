@@ -1,6 +1,6 @@
 import sys
 
-from quill.globals import *
+from quill.package import Package
 
-def addToPath(scope: str, package: str) -> None:
-    sys.path.insert(0, f"{DOT_QUILL}/packages/{scope}/{package}/")
+def add_to_path(package: Package) -> None:
+    sys.path.insert(0, package.get_dir())

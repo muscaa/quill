@@ -10,5 +10,8 @@ command = sys.argv[2]
 
 if command == "run":
     from quill.commands.run import run
+    from quill.package import Package
 
-    run(sys.argv[3], sys.argv[4], sys.argv[5], sys.argv[6:])
+    package = Package(sys.argv[3], sys.argv[4])
+
+    run(package, sys.argv[5], sys.argv[6:])
