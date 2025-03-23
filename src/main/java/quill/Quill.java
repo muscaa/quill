@@ -1,6 +1,6 @@
-package quill.template;
+package quill;
 
-public class QuillTemplate {
+public class Quill {
 	
 	public static void main(String[] args) throws Exception {
 		System.out.println("Hello world!");
