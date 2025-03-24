@@ -1,2 +1,4 @@
-DOT_QUILL: str = None
-QUILL: str = None
+from pathlib import Path
+
+DOT_QUILL: Path = None
+QUILL: Path = None

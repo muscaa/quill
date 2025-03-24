@@ -1,10 +1,11 @@
 import os
 import sys
+from pathlib import Path
 
 from quill import globals
 
-globals.DOT_QUILL = sys.argv[1]
-globals.QUILL = os.path.dirname(os.path.abspath(__file__))
+globals.DOT_QUILL = Path(sys.argv[1])
+globals.QUILL = Path(os.path.dirname(os.path.abspath(__file__)))
 
 command = sys.argv[2]
 

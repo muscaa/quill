@@ -1,4 +1,4 @@
-import os
+from pathlib import Path
 
 from quill.globals import *
 
@@ -7,5 +7,5 @@ class Package:
         self.scope = scope
         self.name = name
     
-    def get_dir(self) -> str:
-        return os.path.abspath(f"{DOT_QUILL}/packages/{self.scope}/{self.name}/")
+    def get_path(self) -> Path:
+        return DOT_QUILL / "packages" / self.scope / self.name
