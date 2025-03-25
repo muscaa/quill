@@ -1,4 +1,6 @@
 from pathlib import Path
 
-DOT_QUILL: Path = None
-QUILL: Path = None
+from quill.package import Package
+
+QUILL_HOME: Path = None
+PACKAGE_QUILL: Package = None
