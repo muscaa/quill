@@ -1,24 +1,32 @@
 import sys
-from pathlib import Path
 
-from run import QUILL_HOME
-from qrun import QUILL_PACKAGE_SCOPE, QUILL_PACKAGE_NAME
+def run_command(args: list[str]) -> None:
+    command = args[0]
 
-from quill import globals
-from quill.package import Package
+    if command == "base-install":
+        from pathlib import Path
 
-globals.QUILL_HOME = QUILL_HOME
-globals.PACKAGE_QUILL = Package(QUILL_PACKAGE_SCOPE, QUILL_PACKAGE_NAME)
+        from quill.commands.install import install
 
-def runCommand(args: list[str]):
-    command = args[1]
+        base = Path(__file__).resolve().parent / "base"
+        if len(args) >= 2:
+            home = Path(args[1])
+        else:
+            home = Path(__file__).resolve().parent.parent.parent.parent
 
-    if command == "run":
+        install(base, home)
+
+    elif command == "run":
+        from quill import globals
+        from quill.package import Package
         from quill.commands.run import run
 
-        package = Package(args[2], args[3])
+        package = Package(args[1], args[2])
 
-        run(package, args[4], args[5:])
+        run(package, args[3], args[4:])
 
-def main():
-    runCommand(sys.argv)
+def main() -> None:
+    run_command(sys.argv[1:])
+
+if __name__ == "__main__":
+    main()
