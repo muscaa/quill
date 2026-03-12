@@ -1,10 +1,12 @@
 plugins {
     id("java-library")
     id("com.vanniktech.maven.publish")
+    id("eclipse")
 }
 
 group = "dev.musca.${rootProject.name}"
 version = System.getenv("GITHUB_REF_NAME")?.removePrefix("v") ?: "0.0.1-SNAPSHOT"
+eclipse.project.name = "${rootProject.name}-${project.name}"
 
 java {
     toolchain {
