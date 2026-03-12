@@ -2,10 +2,18 @@ plugins {
     id("quill.java-conventions")
 }
 
-repositories {
-}
-
 dependencies {
+	shade("dev.musca:fluff-loader:2.0.0") {
+		exclude(group = "dev.musca", module = "fluff-core")
+	}
+	
+	api("dev.musca:fluff-functions:2.0.0") {
+		exclude(group = "dev.musca", module = "fluff-core")
+	}
+	
+	implementation("dev.musca:fluff-vecmath:2.0.0") {
+		exclude(group = "dev.musca", module = "fluff-core")
+	}
 }
 
 tasks.register<Copy>("preBundle") {
@@ -17,5 +25,9 @@ tasks.register<Copy>("preBundle") {
 
     into("libs") {
         from(configurations.runtimeClasspath)
+        
+        from(configurations.runtimeClasspath.incoming.files.filter { file ->
+	        file !in shade.resolve()
+	    })
     }
 }
