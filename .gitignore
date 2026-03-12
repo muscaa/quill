@@ -1,4 +1,4 @@
-# Gradle & IDE dirs
+# Gradle & IDE
 .gradle/
 .settings/
 .idea/
@@ -6,7 +6,8 @@
 bin/
 build/
 run/
-
-# IDE files
 .classpath
 .project
+
+# OS
+.DS_Store
