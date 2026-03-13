@@ -2,20 +2,18 @@ plugins {
     id("quill.java-conventions")
 }
 
-repositories {
-}
-
 dependencies {
+    api("dev.musca:fluff-core:2.0.0")
 }
 
-tasks.register<Copy>("preBundle") {
-    val jarTask = tasks.named<Jar>("jar")
-
+tasks.register<Sync>("preBundle") {
+    dependsOn("jar")
     into(layout.buildDirectory.dir("quill/pre-bundle"))
 
-    from(jarTask.map { it.archiveFile })
-
-    into("libs") {
-        from(configurations.runtimeClasspath)
+    into("java") {
+        from(tasks.jar)
+        into("libs") {
+            from(configurations.runtimeClasspath.get().minus(configurations.shade.get()))
+        }
     }
 }

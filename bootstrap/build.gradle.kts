@@ -1,33 +1,40 @@
 plugins {
     id("quill.java-conventions")
+	id("application")
 }
+
+val mainClassName = "quill.bootstrap.QuillBootstrap"
 
 dependencies {
 	shade("dev.musca:fluff-loader:2.0.0") {
 		exclude(group = "dev.musca", module = "fluff-core")
 	}
-	
-	api("dev.musca:fluff-functions:2.0.0") {
-		exclude(group = "dev.musca", module = "fluff-core")
-	}
-	
-	implementation("dev.musca:fluff-vecmath:2.0.0") {
-		exclude(group = "dev.musca", module = "fluff-core")
+}
+
+tasks.register<Sync>("preBundle") {
+	dependsOn("jar")
+    into(layout.buildDirectory.dir("quill/pre-bundle"))
+
+	into("bootstrap4j") {
+		from(tasks.jar) {
+			rename {
+				"bootstrap.jar"
+			}
+		}
+		into("libs") {
+			from(configurations.runtimeClasspath.get().minus(configurations.shade.get()))
+		}
 	}
 }
 
-tasks.register<Copy>("preBundle") {
-    val jarTask = tasks.named<Jar>("jar")
+application {
+	mainClass = mainClassName
+}
 
-    into(layout.buildDirectory.dir("quill/pre-bundle"))
-
-    from(jarTask.map { it.archiveFile })
-
-    into("libs") {
-        from(configurations.runtimeClasspath)
-        
-        from(configurations.runtimeClasspath.incoming.files.filter { file ->
-	        file !in shade.resolve()
-	    })
-    }
+tasks.jar {
+	manifest {
+		attributes(
+			"Main-Class" to mainClassName
+		)
+	}
 }

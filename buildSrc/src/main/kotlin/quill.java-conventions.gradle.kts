@@ -14,12 +14,12 @@ java {
     }
 }
 
+val shade = configurations.create("shade")
+configurations.api.get().extendsFrom(shade)
+
 repositories {
     mavenCentral()
 }
-
-val shade = configurations.create("shade")
-configurations.implementation.get().extendsFrom(shade)
 
 dependencies {
 }
@@ -29,12 +29,14 @@ tasks.withType<Jar> {
         include("LICENSE", "NOTICE")
         into("META-INF")
     }
-    
-    /*from(shade.map {
-        if (it.isDirectory) it else zipTree(it)
-    })
-    
-    duplicatesStrategy = DuplicatesStrategy.EXCLUDE*/
+}
+
+afterEvaluate {
+    tasks.jar {
+        duplicatesStrategy = DuplicatesStrategy.EXCLUDE
+
+        from(shade.map { if (it.isDirectory) it else zipTree(it) })
+    }
 }
 
 mavenPublishing {
