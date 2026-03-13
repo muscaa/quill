@@ -17,6 +17,9 @@ java {
 val shade = configurations.create("shade")
 configurations.api.get().extendsFrom(shade)
 
+val bootstrap = configurations.create("bootstrap")
+configurations.api.get().extendsFrom(bootstrap)
+
 repositories {
     mavenCentral()
 }

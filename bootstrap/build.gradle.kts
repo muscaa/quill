@@ -6,7 +6,7 @@ plugins {
 val mainClassName = "quill.bootstrap.QuillBootstrap"
 
 dependencies {
-	shade("dev.musca:fluff-loader:2.0.0") {
+	shade("dev.musca:fluff-loader:2.0.1") {
 		exclude(group = "dev.musca", module = "fluff-core")
 	}
 }
