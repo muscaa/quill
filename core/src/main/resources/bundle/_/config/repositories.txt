@@ -1,0 +1,5 @@
+# Don't change this line unless you know what you're doing
+default ${url}
+
+# Extra repositories in "${namespace} ${url}" format
+# ...

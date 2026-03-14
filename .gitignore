@@ -3,11 +3,22 @@
 .settings/
 .idea/
 .kotlin/
-bin/
-build/
-run/
 .classpath
 .project
 
 # OS
 .DS_Store
+
+# Project Specific
+/bin/
+/build/
+/run/
+/buildSrc/bin/
+/buildSrc/build/
+/buildSrc/run/
+/bootstrap/bin/
+/bootstrap/build/
+/bootstrap/run/
+/core/bin/
+/core/build/
+/core/run/

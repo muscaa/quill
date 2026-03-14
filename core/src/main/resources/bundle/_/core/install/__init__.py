@@ -1,7 +1,7 @@
 import sys
 from pathlib import Path
 
-def install(package_path: Path, module_name: str):
+def install(package_zip: Path, destination: Path):
     pass
     # TODO
     # sys.path.insert(0, str(package_path))
