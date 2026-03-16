@@ -1,0 +1,29 @@
+#!/bin/bash
+
+if [ -z "$POST_COMMAND" ]; then
+    POST_COMMAND=$1
+fi
+if [ -z "$POST_COMMAND_ARGS" ]; then
+    POST_COMMAND_ARGS=$@
+fi
+
+while [ ! -z "$POST_COMMAND" ] && [ -f "$POST_RUN_DIR/$POST_COMMAND" ]; do
+    _COMMAND=$POST_COMMAND
+    _COMMAND_ARGS=$POST_COMMAND_ARGS
+    unset POST_COMMAND
+    unset POST_COMMAND_ARGS
+
+    source "$POST_RUN_DIR/$_COMMAND" $_COMMAND_ARGS
+
+    if [ -z "$POST_COMMAND" ]; then
+        POST_COMMAND=$?
+    fi
+    if [ -z "$POST_COMMAND_ARGS" ]; then
+        POST_COMMAND_ARGS=$@
+    fi
+done
+
+unset _COMMAND
+unset _COMMAND_ARGS
+
+rm -rf "$POST_RUN_DIR"

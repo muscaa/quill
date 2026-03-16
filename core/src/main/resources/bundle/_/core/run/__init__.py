@@ -1,8 +1,9 @@
 from pathlib import Path
-from core.utils import add_library
+from core.utils import load_module
 
 def run(package_path: Path, module_name: str):
-    add_library(package_path)
-
-    exec(f"from {module_name} import main")
-    exec(f"main()")
+    module = load_module(package_path, module_name)
+    if module:
+        module.main()
+    else:
+        print(f"Could not load module '{module_name}'")

@@ -1,7 +1,9 @@
 from __future__ import annotations
 from pathlib import Path
+from importlib import util
+import sys
 
-from core.utils import add_library
+from core.utils import add_library, load_module
 
 from quill.files import PACKAGES as DIR_PACKAGES
 from quill.repository import Repository, REPOSITORIES
@@ -19,10 +21,12 @@ class Package:
             return False
 
         try:
-            exec(f"from bin.{binary} import main")
-            exec(f"main(self, args)")
-
-            return True
+            module = load_module(self.get_path(), f"bin.{binary}")
+            if module:
+                module.main(self, args)
+                return True
+            
+            raise Exception(f"Could not load module 'bin.{binary}'")
         except Exception as e:
             print(str(e))
             return False

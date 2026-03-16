@@ -1,0 +1,9 @@
+#!/bin/bash
+
+source "$(dirname $0)/../dist/bin/qinit"
+
+source "$Q_DIST_BIN/qpre"
+source "$Q_DIST_BIN/qcore" run packages/default/muscaa@quill bin.quillx $@
+
+POST_COMMAND=$?
+source "$Q_DIST_BIN/qpost"
