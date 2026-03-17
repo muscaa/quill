@@ -1,7 +1,12 @@
 @echo off
 
+::
+:: FILES
+::
 set "Q_HOME=%~dp0\..\.."
-call "%~dp0\qresolve.cmd" Q_HOME
+for %%i in ("%Q_HOME%") do set "Q_HOME=%%~fi"
+
+echo "Q_HOME : %Q_HOME%"
 
 set "Q_BIN=%Q_HOME%\bin"
 
@@ -13,3 +18,11 @@ if not exist "%Q_CONFIG%" mkdir "%Q_CONFIG%"
 
 set "Q_TEMP=%Q_HOME%\temp"
 if not exist "%Q_TEMP%" mkdir "%Q_TEMP%"
+
+::
+:: OTHER
+::
+call "%Q_DIST_BIN%\qpid.cmd"
+set "QPID=%errorlevel%"
+
+echo "QPID : %QPID%"
