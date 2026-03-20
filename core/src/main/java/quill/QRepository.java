@@ -10,9 +10,8 @@ import java.util.Objects;
 import fluff.core.utils.StringUtils;
 
 public class QRepository {
-	
-	public static final List<QRepository> REPOSITORIES = repositories(
-			new File(QFiles.CONFIG, "repositories.txt"));
+
+	public static final List<QRepository> REPOSITORIES = repositories(new File(QFiles.CONFIG, "repositories.txt"));
 
 	public final String namespace;
 	public final String url;

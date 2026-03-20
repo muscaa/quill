@@ -174,7 +174,7 @@ public class QPackage {
 		if (path.getNameCount() < 2 || path.isAbsolute()) {
 			throw new IllegalArgumentException("Invalid install location");
 		}
-		
+
 		String namespace = path.getName(0).toString();
 		String[] split = split(path.getName(1).toString());
 		String author = split[1];

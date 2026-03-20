@@ -15,11 +15,13 @@ public class QuillBootstrap {
 
 	public static final RuntimeClassLoader LOADER = new RuntimeClassLoader();
 	public static final List<String> LIBRARIES = new LinkedList<>();
+	public static final File CWD;
 	public static final File QUILL;
 	public static final File HOME;
 
 	static {
 		try {
+			CWD = new File(System.getProperty("user.dir"));
 			QUILL = new File(QuillBootstrap.class.getProtectionDomain().getCodeSource().getLocation().toURI())
 					.getParentFile().getParentFile();
 			HOME = QUILL.getParentFile().getParentFile().getParentFile();
