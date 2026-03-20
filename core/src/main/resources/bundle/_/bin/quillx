@@ -1,6 +1,6 @@
 #!/bin/bash
 
-source "$(dirname $0)/../dist/bin/qinit"
+source "$(dirname $0)/../dist/core/qinit"
 
 source "$Q_DIST_CORE/qpre"
 source "$Q_DIST_CORE/qcore" run packages/default/muscaa@quill bin.quillx $@

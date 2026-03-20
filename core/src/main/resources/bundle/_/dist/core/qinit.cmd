@@ -9,7 +9,7 @@ for %%i in ("%Q_HOME%") do set "Q_HOME=%%~fi"
 set "Q_BIN=%Q_HOME%\bin"
 
 set "Q_DIST=%Q_HOME%\dist"
-set "Q_DIST_CORE=%Q_DIST%\bin"
+set "Q_DIST_CORE=%Q_DIST%\core"
 
 set "Q_CONFIG=%Q_HOME%\config"
 if not exist "%Q_CONFIG%" mkdir "%Q_CONFIG%"
