@@ -8,7 +8,7 @@ Q_HOME=$(realpath "$(dirname $BASH_SOURCE)/../..")
 Q_BIN="$Q_HOME/bin"
 
 Q_DIST="$Q_HOME/dist"
-Q_DIST_BIN="$Q_DIST/bin"
+Q_DIST_CORE="$Q_DIST/core"
 
 Q_CONFIG="$Q_HOME/config"
 mkdir -p "$Q_CONFIG"

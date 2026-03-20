@@ -1,0 +1,3 @@
+#!/bin/bash
+
+source "$Q_DIST_CORE/qpython" "$Q_HOME/main.py" $@

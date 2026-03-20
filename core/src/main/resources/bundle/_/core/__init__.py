@@ -1,24 +1,14 @@
 import sys
+import os
 from pathlib import Path
-from core.files import HOME
-from core.run import run
-from core.install import install
+from core.commands import version, run
 
+HOME: Path = Path(__file__).resolve().parent.parent
+ENV_QPID = int(os.getenv("QPID", -1)),
+ENV_QPOST = bool(os.getenv("QPOST", False)),
 VERSION: str
 SCHEDULE: list[list[str]]
 ARGS: list[str]
-
-def _command_run():
-    package_path = Path(ARGS.pop(0))
-    if not package_path.is_absolute():
-        package_path = HOME / package_path
-    
-    module_name = ARGS.pop(0)
-    
-    run(package_path, module_name)
-
-def _command_install():
-    pass
 
 def _init():
     global VERSION, SCHEDULE
@@ -40,9 +30,9 @@ def main():
         ARGS = SCHEDULE.pop(0)
 
         command = ARGS.pop(0)
-        if command == "run":
-            _command_run()
-        elif command == "install":
-            _command_install()
+        if command == "version":
+            version.execute()
+        elif command == "run":
+            run.execute()
         else:
             print("Unknown command")

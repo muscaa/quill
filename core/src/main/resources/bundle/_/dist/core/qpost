@@ -7,6 +7,8 @@ if [ -z "$POST_COMMAND_ARGS" ]; then
     POST_COMMAND_ARGS=$@
 fi
 
+export QPOST="true"
+
 while [ ! -z "$POST_COMMAND" ] && [ -f "$POST_RUN_DIR/$POST_COMMAND" ]; do
     _COMMAND=$POST_COMMAND
     _COMMAND_ARGS=$POST_COMMAND_ARGS
@@ -25,5 +27,6 @@ done
 
 unset _COMMAND
 unset _COMMAND_ARGS
+unset QPOST
 
 rm -rf "$POST_RUN_DIR"

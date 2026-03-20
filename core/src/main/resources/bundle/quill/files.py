@@ -1,4 +1,4 @@
-from core.files import HOME
+from core import HOME
 
 PACKAGES = HOME / "packages"
 CONFIG = HOME / "config"

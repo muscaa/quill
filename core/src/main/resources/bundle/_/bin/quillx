@@ -2,8 +2,8 @@
 
 source "$(dirname $0)/../dist/bin/qinit"
 
-source "$Q_DIST_BIN/qpre"
-source "$Q_DIST_BIN/qcore" run packages/default/muscaa@quill bin.quillx $@
+source "$Q_DIST_CORE/qpre"
+source "$Q_DIST_CORE/qcore" run packages/default/muscaa@quill bin.quillx $@
 
 POST_COMMAND=$?
-source "$Q_DIST_BIN/qpost"
+source "$Q_DIST_CORE/qpost" "$Q_DIST_CORE/qcore" run packages/default/muscaa@quill bin.quillx $@
