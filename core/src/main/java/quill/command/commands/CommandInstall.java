@@ -10,11 +10,11 @@ import fluff.commander.command.CommandException;
 import fluff.files.FileHelper;
 import fluff.json.JSON;
 import fluff.json.JSONObject;
-import quill.command.QCommand;
-import quill.command.QCommandSource;
+import quill.command.Command;
+import quill.command.CommandSource;
 import quill.command.QCommander;
 
-public class CommandInstall extends QCommand {
+public class CommandInstall extends Command {
 	
     public static final IArgument<String> ARG_PACKAGE = ArgumentBuilder
             .String("--package", "-p")
@@ -36,7 +36,7 @@ public class CommandInstall extends QCommand {
 	}
 	
 	@Override
-	public int onAction(QCommander c, QCommandSource source, CommandArguments args) throws CommandException {
+	public int onAction(QCommander c, CommandSource source, CommandArguments args) throws CommandException {
 		String argPackage = args.get(ARG_PACKAGE);
 		String argFile = args.get(ARG_FILE);
 		

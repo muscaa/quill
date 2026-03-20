@@ -3,7 +3,7 @@ package quill.command;
 import fluff.commander.Commander;
 import quill.command.commands.CommandInstall;
 
-public class QCommander extends Commander<QCommander, QCommandSource> {
+public class QCommander extends Commander<QCommander, CommandSource> {
 
 	public QCommander() {
 		super(false, "quill");
