@@ -6,6 +6,8 @@ import quill.IPackage;
 
 public class Release {
 	
+	public static final String DELIMITER = ":";
+	
 	private final Tag tag;
 	private final Version version;
 	
@@ -24,7 +26,7 @@ public class Release {
 	
 	@Override
 	public String toString() {
-		return tag.toString() + ":" + version.toString();
+		return tag.toString() + DELIMITER + version.toString();
 	}
 	
 	@Override
@@ -48,7 +50,7 @@ public class Release {
 	}
 	
 	public static Release of(String release) {
-		String[] split = release.split(":", 2);
+		String[] split = release.split(DELIMITER, 2);
 		if (split.length != 2) {
 			return null;
 		}

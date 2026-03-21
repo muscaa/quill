@@ -11,13 +11,17 @@ public class Criteria {
 	protected Criteria(String id) {
 		this.id = id;
 	}
+	
+	public boolean hasId() {
+		return !id.equals(ANY);
+	}
 
 	public String getId() {
 		return id;
 	}
 
 	public boolean matches(String id) {
-		return this.id.equals(id);
+		return !hasId() || this.id.equals(id);
 	}
 
 	@Override
@@ -39,9 +43,14 @@ public class Criteria {
 	}
 
 	public static Criteria of(String id) {
-		if (id == null || !Spec.PATTERN_ID.matcher(id).matches()) {
+		if (id == null) {
+			id = ANY;
+		}
+
+		if (!id.equals(ANY) && !Spec.PATTERN_ID.matcher(id).matches()) {
 			return null;
 		}
+		
 		return new Criteria(id);
 	}
 }

@@ -13,6 +13,17 @@ public abstract class AbstractRepositoryManager<P extends IPackage, R extends Ab
 
 	protected final Map<String, List<R>> repositories = new LinkedHashMap<>();
 
+	protected void put(String namespace, R repository) {
+		if (repositories.containsKey(namespace)) {
+			List<R> list = repositories.get(namespace);
+			list.add(repository);
+		} else {
+			List<R> list = new LinkedList<>();
+			list.add(repository);
+			repositories.put(namespace, list);
+		}
+	}
+
 	protected void find(List<P> to, List<R> repos, SpecCriteria criteria) {
 		if (repos == null) {
 			return;

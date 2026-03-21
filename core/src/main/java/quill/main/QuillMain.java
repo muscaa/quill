@@ -3,7 +3,7 @@ package quill.main;
 import java.io.File;
 import java.util.Arrays;
 
-import quill.QPackage;
+import quill.local.LocalPackage;
 
 public class QuillMain {
 	
@@ -13,18 +13,18 @@ public class QuillMain {
 			return;
 		}
 		
-		String packagePath = args[0];
+		String packageDir = args[0];
 		String packageMainClass = args[1];
 		String[] packageArgs = Arrays.copyOfRange(args, 2, args.length);
 		
-		QPackage pkg = QPackage.fromFile(new File(packagePath));
-		if (pkg == null) {
+		LocalPackage p = LocalPackage.from(new File(packageDir));
+		if (p == null) {
 			System.out.println("Package not found");
 			return;
 		}
 		
 		// resolve dependencies
 		
-		pkg.run(packageMainClass, packageArgs);
+		p.run(packageMainClass, packageArgs);
 	}
 }

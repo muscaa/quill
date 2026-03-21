@@ -2,12 +2,17 @@ package quill.local;
 
 import java.io.File;
 import java.lang.reflect.Method;
+import java.nio.file.Path;
 import java.util.Objects;
 
 import fluff.core.utils.StringUtils;
+import fluff.files.FileHelper;
+import fluff.json.JSON;
+import fluff.json.JSONObject;
 import quill.IPackage;
 import quill.QFiles;
 import quill.bootstrap.QuillBootstrap;
+import quill.info.Spec;
 import quill.info.Tag;
 import quill.info.Version;
 
@@ -20,13 +25,18 @@ public class LocalPackage implements IPackage {
 	private final String description;
 	private final File dir;
 
-	public LocalPackage(String namespace, String author, String id, Version version, String description) {
+	public LocalPackage(String namespace, String author, String id, Version version, String description, File dir) {
 		this.namespace = namespace;
 		this.author = author;
 		this.id = id;
 		this.version = version;
 		this.description = description;
-		this.dir = new File(QFiles.PACKAGES, Tag.of(this).toString());
+		this.dir = dir;
+	}
+
+	public LocalPackage(String namespace, String author, String id, Version version, String description) {
+		this(namespace, author, id, version, description,
+				new File(QFiles.PACKAGES, Tag.of(namespace, Spec.of(author, id)).toString()));
 	}
 
 	public boolean run(String mainClass, String[] args) {
@@ -48,7 +58,7 @@ public class LocalPackage implements IPackage {
 	}
 
 	public boolean include() {
-		File dir = new File(getDir(), "java");
+		File dir = getDir();
 		if (!dir.isDirectory())
 			return false;
 
@@ -107,22 +117,26 @@ public class LocalPackage implements IPackage {
 		return Objects.hash(namespace, author, id, version, description, dir);
 	}
 
-//	public static QPackage fromFile(File file) {
-//		Path path = QFiles.PACKAGES.toPath().relativize(file.getAbsoluteFile().toPath());
-//
-//		if (path.getNameCount() < 2 || path.isAbsolute()) {
-//			throw new IllegalArgumentException("Invalid install location");
-//		}
-//
-//		String namespace = path.getName(0).toString();
-//		String[] split = split(path.getName(1).toString());
-//		String author = split[1];
-//		String id = split[2];
-//
-//		if (id == null || author == null) {
-//			throw new IllegalArgumentException("Invalid install location");
-//		}
-//
-//		return new QPackage(namespace, author, id);
-//	}
+	public static LocalPackage from(File dir, String namespace) {
+		File packageFile = new File(dir, "package.json");
+		if (!packageFile.exists() || !packageFile.isFile()) {
+			return null;
+		}
+
+		JSONObject json = JSON.object(FileHelper.read(packageFile).String());
+
+		String id = json.getString("id");
+		String author = json.getString("author");
+		String version = json.getString("version");
+		String description = json.getString("description");
+		
+		return new LocalPackage(namespace, author, id, Version.of(version), description, dir);
+	}
+
+	public static LocalPackage from(File dir) {
+		Path path = QFiles.PACKAGES.toPath().relativize(dir.getAbsoluteFile().toPath());
+		String namespace = path.getNameCount() != 2 || path.isAbsolute() ? null : path.getName(0).toString();
+
+		return from(dir, namespace);
+	}
 }

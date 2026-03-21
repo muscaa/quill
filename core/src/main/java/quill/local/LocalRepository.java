@@ -7,7 +7,6 @@ import fluff.core.utils.StringUtils;
 import quill.AbstractRepository;
 import quill.QFiles;
 import quill.info.Spec;
-import quill.info.Version;
 
 public class LocalRepository extends AbstractRepository<LocalPackage> {
 
@@ -34,9 +33,12 @@ public class LocalRepository extends AbstractRepository<LocalPackage> {
 				continue;
 			}
 
-			// TODO read package.json
+			LocalPackage p = LocalPackage.from(f, namespace);
+			if (p == null) {
+				continue;
+			}
 
-			packages.add(new LocalPackage(namespace, spec.getAuthor(), spec.getId(), Version.of("0.0.0"), null));
+			packages.add(p);
 		}
 	}
 
@@ -61,38 +63,4 @@ public class LocalRepository extends AbstractRepository<LocalPackage> {
 	public int hashCode() {
 		return Objects.hash(super.hashCode(), dir);
 	}
-
-//	public static Map<String, QPackage> packages(File dir, List<QRepository> repositories) {
-//		Map<String, QPackage> map = new LinkedHashMap<>();
-//
-//		List<QRepository> repoList = repositories != null ? repositories : QRepository.REPOSITORIES;
-//		Map<String, Integer> priorityMap = new LinkedHashMap<>();
-//		int ri = 0;
-//		for (QRepository repo : repoList) {
-//			priorityMap.putIfAbsent(repo.namespace, ri++);
-//		}
-//		int defaultPriority = priorityMap.size();
-//
-//		File[] sortedSubdirs = dir.listFiles(File::isDirectory);
-//		Arrays.sort(sortedSubdirs,
-//				Comparator.comparingInt(file -> priorityMap.getOrDefault(file.getName(), defaultPriority)));
-//
-//		for (File namespaceFile : sortedSubdirs) {
-//			String namespace = namespaceFile.getName();
-//
-//			for (File specFile : namespaceFile.listFiles(File::isDirectory)) {
-//				String[] split = split(specFile.getName());
-//				String author = split[1];
-//				String id = split[2];
-//
-//				if (id == null || author == null)
-//					continue;
-//
-//				QPackage pkg = new QPackage(namespace, author, id);
-//				map.put(pkg.tag, pkg);
-//			}
-//		}
-//
-//		return map;
-//	}
 }
