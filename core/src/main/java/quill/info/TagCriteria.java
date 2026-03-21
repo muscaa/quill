@@ -2,62 +2,56 @@ package quill.info;
 
 import java.util.Objects;
 
-public class TagCriteria {
-
-	public static final String ANY = "*";
+public class TagCriteria extends SpecCriteria {
 
 	private final String namespace;
-	private final String author;
-	private final String id;
 
 	private TagCriteria(String namespace, String author, String id) {
+		super(author, id);
 		this.namespace = namespace;
-		this.author = author;
-		this.id = id;
 	}
 
 	public boolean hasNamespace() {
-		return namespace != null;
+		return !namespace.equals(ANY);
 	}
 
 	public String getNamespace() {
 		return namespace;
 	}
 
-	public boolean hasAuthor() {
-		return author != null;
-	}
-
-	public String getAuthor() {
-		return author;
-	}
-
-	public String getId() {
-		return id;
+	public boolean matches(Tag tag) {
+		return (!hasNamespace() || namespace.equals(tag.getNamespace())) && super.matches(tag.getSpec());
 	}
 
 	@Override
 	public String toString() {
-		return (hasNamespace() ? namespace : ANY) + Tag.DELIMITER + (hasAuthor() ? author : ANY) + Spec.DELIMITER + id;
+		return namespace + Tag.DELIMITER + super.toString();
 	}
 
 	@Override
 	public boolean equals(Object obj) {
-		if (!(obj instanceof TagCriteria tc)) {
+		if (!(obj instanceof TagCriteria c)) {
 			return false;
 		}
-		return namespace.equals(tc.namespace) && author.equals(tc.author) && id.equals(tc.id);
+		return namespace.equals(c.namespace) && super.equals(c);
 	}
 
 	@Override
 	public int hashCode() {
-		return Objects.hash(namespace, author, id);
+		return Objects.hash(namespace, super.hashCode());
 	}
 
 	public static TagCriteria of(String namespace, String author, String id) {
-		if ((namespace != null && !namespace.equals(ANY) && !Tag.PATTERN_NAMESPACE.matcher(namespace).matches())
-				|| (author != null && !author.equals(ANY) && !Spec.PATTERN_AUTHOR.matcher(author).matches())
-				|| id == null || Spec.PATTERN_ID.matcher(id).matches()) {
+		if (namespace == null) {
+			namespace = ANY;
+		}
+
+		if (!namespace.equals(ANY) && !Tag.PATTERN_NAMESPACE.matcher(namespace).matches()) {
+			return null;
+		}
+
+		SpecCriteria c = SpecCriteria.of(author, id);
+		if (c == null) {
 			return null;
 		}
 
@@ -65,20 +59,20 @@ public class TagCriteria {
 	}
 
 	public static TagCriteria of(String criteria) {
-		String[] split1 = criteria.split(Tag.DELIMITER);
-		if (split1.length > 2) {
+		String[] split = criteria.split(Tag.DELIMITER);
+		if (split.length > 2) {
 			return null;
 		}
 
-		String[] split2 = split1[split1.length - 1].split(Spec.DELIMITER);
-		if (split2.length > 2) {
+		SpecCriteria c = SpecCriteria.of(split[split.length - 1]);
+		if (c == null) {
 			return null;
 		}
 
-		String namespace = split1.length == 2 ? split1[0] : null;
-		String author = split2.length == 2 ? split2[0] : null;
-		String id = split2[split2.length - 1];
-		
+		String namespace = split.length == 2 ? split[0] : ANY;
+		String author = c.getAuthor();
+		String id = c.getId();
+
 		return of(namespace, author, id);
 	}
 }

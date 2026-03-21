@@ -24,6 +24,7 @@ public class QuillBootstrap {
 			CWD = new File(System.getProperty("user.dir"));
 			QUILL = new File(QuillBootstrap.class.getProtectionDomain().getCodeSource().getLocation().toURI())
 					.getParentFile().getParentFile();
+			System.out.println(QUILL.getAbsolutePath());
 			HOME = QUILL.getParentFile().getParentFile().getParentFile();
 		} catch (Exception e) {
 			throw new RuntimeException(e);

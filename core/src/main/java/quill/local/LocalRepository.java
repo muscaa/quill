@@ -1,67 +1,98 @@
 package quill.local;
 
-import java.io.BufferedReader;
 import java.io.File;
-import java.io.FileReader;
-import java.util.LinkedList;
-import java.util.List;
 import java.util.Objects;
 
 import fluff.core.utils.StringUtils;
+import quill.AbstractRepository;
+import quill.QFiles;
+import quill.info.Spec;
+import quill.info.Version;
 
-public class LocalRepository {
+public class LocalRepository extends AbstractRepository<LocalPackage> {
 
-	public static final List<LocalRepository> REPOSITORIES = repositories(new File(QFiles.CONFIG, "repositories.txt"));
+	protected final File dir;
 
-	public final String namespace;
-	public final String url;
+	public LocalRepository(String namespace, File dir) {
+		super(namespace);
+		this.dir = dir;
 
-	public LocalRepository(String namespace, String url) {
-		this.namespace = namespace;
-		this.url = url;
+		refresh();
 	}
 
-	public File getPath() {
-		return new File(QFiles.PACKAGES, namespace);
+	public LocalRepository(String namespace) {
+		this(namespace, new File(QFiles.PACKAGES, namespace));
+	}
+
+	@Override
+	public void refresh() {
+		super.refresh();
+
+		for (File f : dir.listFiles(File::isDirectory)) {
+			Spec spec = Spec.of(f.getName());
+			if (spec == null) {
+				continue;
+			}
+
+			// TODO read package.json
+
+			packages.add(new LocalPackage(namespace, spec.getAuthor(), spec.getId(), Version.of("0.0.0"), null));
+		}
+	}
+
+	public File getDir() {
+		return dir;
 	}
 
 	@Override
 	public String toString() {
-		return StringUtils.format("QRepository(namespace=\"${}\", url=\"${}\")", namespace, url);
+		return StringUtils.format("LocalRepository(namespace=\"${}\", dir=\"${}\")", namespace, dir);
 	}
 
 	@Override
 	public boolean equals(Object obj) {
-		if (!(obj instanceof LocalRepository r))
+		if (!(obj instanceof LocalRepository r)) {
 			return false;
-
-		return namespace.equals(namespace) && url.equals(r.url);
+		}
+		return super.equals(r) && dir.equals(r.dir);
 	}
 
 	@Override
 	public int hashCode() {
-		return Objects.hash(namespace, url);
+		return Objects.hash(super.hashCode(), dir);
 	}
 
-	public static List<LocalRepository> repositories(File file) {
-		List<LocalRepository> list = new LinkedList<>();
-
-		try (BufferedReader br = new BufferedReader(new FileReader(file))) {
-			String rawLine;
-			while ((rawLine = br.readLine()) != null) {
-				String line = rawLine.strip();
-				if (line.isEmpty() || line.startsWith("#"))
-					continue;
-
-				String[] split = line.split(" ", 2);
-				if (split.length != 2)
-					continue;
-
-				list.add(new LocalRepository(split[0], split[1]));
-			}
-		} catch (Exception e) {
-		}
-
-		return list;
-	}
+//	public static Map<String, QPackage> packages(File dir, List<QRepository> repositories) {
+//		Map<String, QPackage> map = new LinkedHashMap<>();
+//
+//		List<QRepository> repoList = repositories != null ? repositories : QRepository.REPOSITORIES;
+//		Map<String, Integer> priorityMap = new LinkedHashMap<>();
+//		int ri = 0;
+//		for (QRepository repo : repoList) {
+//			priorityMap.putIfAbsent(repo.namespace, ri++);
+//		}
+//		int defaultPriority = priorityMap.size();
+//
+//		File[] sortedSubdirs = dir.listFiles(File::isDirectory);
+//		Arrays.sort(sortedSubdirs,
+//				Comparator.comparingInt(file -> priorityMap.getOrDefault(file.getName(), defaultPriority)));
+//
+//		for (File namespaceFile : sortedSubdirs) {
+//			String namespace = namespaceFile.getName();
+//
+//			for (File specFile : namespaceFile.listFiles(File::isDirectory)) {
+//				String[] split = split(specFile.getName());
+//				String author = split[1];
+//				String id = split[2];
+//
+//				if (id == null || author == null)
+//					continue;
+//
+//				QPackage pkg = new QPackage(namespace, author, id);
+//				map.put(pkg.tag, pkg);
+//			}
+//		}
+//
+//		return map;
+//	}
 }
