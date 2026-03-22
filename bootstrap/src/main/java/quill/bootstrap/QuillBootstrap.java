@@ -15,16 +15,18 @@ public class QuillBootstrap {
 
 	public static final RuntimeClassLoader LOADER = new RuntimeClassLoader();
 	public static final List<String> LIBRARIES = new LinkedList<>();
-	public static final File CWD;
 	public static final File QUILL;
 	public static final File HOME;
+	public static final int ENV_QPID;
+	public static final boolean ENV_QPOST;
 
 	static {
 		try {
-			CWD = new File(System.getProperty("user.dir"));
 			QUILL = new File(QuillBootstrap.class.getProtectionDomain().getCodeSource().getLocation().toURI())
 					.getParentFile().getParentFile();
 			HOME = QUILL.getParentFile().getParentFile().getParentFile();
+			ENV_QPID = Integer.parseInt(System.getenv("QPID"));
+			ENV_QPOST = Boolean.parseBoolean(System.getenv("QPOST"));
 		} catch (Exception e) {
 			throw new RuntimeException(e);
 		}

@@ -4,8 +4,8 @@ from pathlib import Path
 from core.commands import version, run
 
 HOME: Path = Path(__file__).resolve().parent.parent
-ENV_QPID = int(os.getenv("QPID", -1)),
-ENV_QPOST = bool(os.getenv("QPOST", False)),
+ENV_QPID = int(os.getenv("QPID", -1))
+ENV_QPOST = bool(os.getenv("QPOST", False))
 VERSION: str
 SCHEDULE: list[list[str]]
 ARGS: list[str]

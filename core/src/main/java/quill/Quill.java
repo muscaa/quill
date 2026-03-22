@@ -14,6 +14,7 @@ public class Quill {
 	
 	public final LocalRepositoryManager localRepositories = new LocalRepositoryManager();
 	public final RemoteRepositoryManager remoteRepositories = new RemoteRepositoryManager();
+	public final CommandSource console = new CommandSource();
 	public final QCommander commands = new QCommander();
 	
 	private void init() throws Exception {
@@ -27,7 +28,6 @@ public class Quill {
 	private static void main(LocalPackage lp, String[] args) throws Exception {
 		INSTANCE.init();
 		
-		int exit = INSTANCE.commands.execute(new CommandSource(), new StringArrayArgumentInput(args));
-		System.out.println("exit: " + exit);
+		INSTANCE.commands.execute(INSTANCE.console, new StringArrayArgumentInput(args));
 	}
 }

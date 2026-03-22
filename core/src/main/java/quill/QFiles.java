@@ -7,7 +7,6 @@ import quill.bootstrap.QuillBootstrap;
 
 public class QFiles {
 	
-	public static final File CWD = QuillBootstrap.CWD;
 	public static final File HOME = QuillBootstrap.HOME;
 	public static final Folder PACKAGES = new Folder(HOME, "packages");
 	public static final Folder CONFIG = new Folder(HOME, "config");

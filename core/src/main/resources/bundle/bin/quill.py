@@ -7,7 +7,8 @@ from quill.files import TEMP
 
 def main(package: Package, args: list[str]):
     exit = java.run(package, "quill.Quill", args.copy())
-    exit = 0 if core.ENV_QPOST else 10 # TODO remove
+    # exit = 0 if core.ENV_QPOST else 10 # TODO remove
+    print(exit)
     
     if exit == 10: # install update & restart
         module = load_module(TEMP / "quill-update", "setup", False)
@@ -20,5 +21,10 @@ def main(package: Package, args: list[str]):
             f.write(f"""
                     source $@
                     POST_COMMAND=$?
+                    """)
+        with open(TEMP / f"post-{core.ENV_QPID}/{exit}.cmd", "w") as f:
+            f.write(f"""
+                    call %*
+                    POST_COMMAND=%errorlevel%
                     """)
         sys.exit(exit)
