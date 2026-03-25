@@ -63,7 +63,7 @@ class SetupWizard:
         commands = self._commands
         self._commands = None
 
-        shutil.rmtree(self.root_dir, ignore_errors=True) # TODO remove
+        # shutil.rmtree(self.root_dir, ignore_errors=True) # TODO remove
 
         for command in commands:
             command.execute()

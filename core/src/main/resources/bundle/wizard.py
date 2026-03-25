@@ -7,6 +7,16 @@ def install():
         raise Exception("Unknown setup")
     v1 = V1(wizard)
 
+    v1.owns([
+        "@/core/",
+        "@/dist/core/",
+        "@/main.py",
+        "@/bin/quill", # TODO what if its not global?
+        "@/bin/quill.cmd",
+        "@/bin/quillx",
+        "@/bin/quillx.cmd",
+    ])
+
     v1.replace("bin/")
     v1.replace("quill/")
     v1.replace("bootstrap4j/")

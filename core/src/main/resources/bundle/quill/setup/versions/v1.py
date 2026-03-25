@@ -20,6 +20,10 @@ class SetupV1:
     def __init__(self, wizard: SetupWizard):
         self.wizard = wizard
 
+    def owns(self, paths: list[str | Path]):
+        # TODO add owns command to wizard
+        pass
+
     def copy(self, src: str | Path, dest: str | Path | None = None):
         _src = _resolve(self.wizard.root_dir, self.wizard.dir, src)
         _dest = _resolve(self.wizard.root_dir, self.wizard.package_dir, src if dest is None else dest)
