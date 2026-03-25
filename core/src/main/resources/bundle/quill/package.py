@@ -1,5 +1,6 @@
 from __future__ import annotations
 from pathlib import Path
+import json
 
 from core.utils import add_library, load_module
 
@@ -130,3 +131,40 @@ class Package:
         return Package(namespace, author, id)
     
 PACKAGES = Package.packages(DIR_PACKAGES)
+
+class PackageInfo:
+    def __init__(self, namespace: str | None, author: str, id: str, version: str, description: str | None, dir: Path):
+        self.namespace = namespace
+        self.author = author
+        self.id = id
+        self.version = version
+        self.description = description
+        self.dir = dir
+        self.spec = f"{author}@{id}"
+        self.tag = f"{namespace}/{self.spec}"
+
+    @classmethod
+    def from_dir(cls, dir: Path, namespace: str | None = None) -> PackageInfo | None:
+        with open(dir / "package.json") as f:
+            package_json = json.loads(f.read())
+            if not isinstance(package_json, dict):
+                raise ValueError("package.json contains invalid json")
+
+            author = package_json.get("author")
+            if not isinstance(author, str):
+                raise ValueError("Field 'author' must be a string!")
+            
+            id = package_json.get("id")
+            if not isinstance(id, str):
+                raise ValueError("Field 'id' must be a string!")
+            
+            version = package_json.get("version")
+            if not isinstance(version, str):
+                raise ValueError("Field 'version' must be a string!")
+
+            description = package_json.get("description")
+            if not isinstance(description, (str, type(None))):
+                raise ValueError("Field 'description' must be a string or null!")
+
+            return PackageInfo(namespace, author, id, version, description, dir)
+        return None

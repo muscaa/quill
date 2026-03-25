@@ -1,19 +1,22 @@
 import sys
 import core
-from core.utils import load_module
 from quill.package import Package
 from quill.bootstrap import java
 from quill.files import TEMP
+from quill.setup import SetupWizard
+from quill.globals import PACKAGE_QUILL
 
 def main(package: Package, args: list[str]):
     exit = java.run(package, "quill.Quill", args.copy())
     
     if exit == 10: # install update & restart
-        module = load_module(TEMP / "quill-update", "setup", False)
-        if not module:
+        wizard = SetupWizard.load(TEMP / "quill-update", PACKAGE_QUILL.namespace)
+        if not wizard:
             sys.exit(1)
 
-        module.install()
+        result = wizard.install()
+        if not result:
+            sys.exit(1)
 
         with open(TEMP / f"post-{core.ENV_QPID}/{exit}", "w") as f:
             f.write(f"""
