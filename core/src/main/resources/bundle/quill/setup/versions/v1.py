@@ -3,7 +3,7 @@ from pathlib import Path
 
 from quill.files import PACKAGES, TEMP
 from quill.setup import SetupWizard
-from quill.setup.commands import copy, delete
+from quill.setup.commands import owns, copy, delete
 
 def _resolve(root_dir: Path, parent_dir: Path, path: str | Path) -> Path:
     path_str = str(path)
@@ -21,8 +21,9 @@ class SetupV1:
         self.wizard = wizard
 
     def owns(self, paths: list[str | Path]):
-        # TODO add owns command to wizard
-        pass
+        _paths = list(map(lambda path: _resolve(self.wizard.root_dir, self.wizard.package_dir, path), paths))
+
+        self.wizard._add(owns.Owns(_paths))
 
     def copy(self, src: str | Path, dest: str | Path | None = None):
         _src = _resolve(self.wizard.root_dir, self.wizard.dir, src)
