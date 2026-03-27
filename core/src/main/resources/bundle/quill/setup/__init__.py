@@ -2,7 +2,6 @@ from __future__ import annotations
 from abc import ABC, abstractmethod
 from pathlib import Path
 from types import ModuleType
-import shutil
 
 from core.utils import load_module
 from quill.package import PackageInfo
@@ -18,7 +17,7 @@ class Command(ABC):
         if not self._wizard:
             raise AttributeError("The 'wizard' field has not been set yet!")
         return self._wizard
-
+    
     @abstractmethod
     def can_execute(self) -> bool:
         pass
@@ -70,14 +69,9 @@ class SetupWizard:
 
     def install(self) -> bool:
         try:
-            from quill.setup.versions import V1
-
             if hasattr(self.module, "install"):
                 print(f"Installing {self.info.tag}...")
                 self._begin()
-                v1 = V1(self)
-                v1.replace("wizard.py")
-                v1.replace("package.json")
                 self.module.install()
                 self._end()
                 print(f"Done!")

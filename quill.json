@@ -1,7 +1,7 @@
 {
     "$schema": "",
     "install": {
-        "run": "gradlew.bat bundle",
+        "run": "./gradlew bundle",
         "from": "build/quill/bundle/quill-bundle.zip"
     }
 }

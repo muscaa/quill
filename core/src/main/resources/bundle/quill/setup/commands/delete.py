@@ -2,6 +2,7 @@ from pathlib import Path
 import shutil
 
 from quill.setup import Command
+from quill.setup.commands import owns
 
 class Delete(Command):
     def __init__(self, path: Path):
@@ -9,7 +10,7 @@ class Delete(Command):
         self.path = path
     
     def can_execute(self):
-        return True
+        return owns.owns(self.wizard.root_dir, self.path, self.wizard.info.tag)
     
     def execute(self):
         if self.path.is_dir():
