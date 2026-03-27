@@ -5,7 +5,7 @@ from types import ModuleType
 
 from core.utils import load_module
 from quill.package import PackageInfo
-from quill.files import TEMP
+from quill.files import TEMP, HOME, PACKAGES
 
 class Command(ABC):
     def __init__(self):
@@ -34,8 +34,10 @@ class SetupWizard:
         self.info = info
         self.module = module
         self.dir = info.dir
-        self.root_dir = TEMP / "_"
-        self.package_dir = TEMP / "_/packages" / info.tag
+        # self.root_dir = TEMP / "_"
+        # self.package_dir = TEMP / "_/packages" / info.tag
+        self.root_dir = HOME
+        self.package_dir = PACKAGES / info.tag
 
     def _begin(self):
         if self._commands is not None:
