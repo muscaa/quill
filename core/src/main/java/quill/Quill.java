@@ -2,6 +2,7 @@ package quill;
 
 import fluff.commander.argument.StringArrayArgumentInput;
 import fluff.core.FluffCore;
+import quill.bootstrap.QuillBootstrap;
 import quill.command.CommandSource;
 import quill.command.QCommander;
 import quill.local.LocalPackage;
@@ -13,6 +14,7 @@ public class Quill {
 	public static final Quill INSTANCE = new Quill();
 	
 	public final LocalRepositoryManager localRepositories = new LocalRepositoryManager();
+	public final LocalPackage quillPackage = LocalPackage.from(QuillBootstrap.QUILL);
 	public final RemoteRepositoryManager remoteRepositories = new RemoteRepositoryManager();
 	public final CommandSource console = new CommandSource();
 	public final QCommander commands = new QCommander();

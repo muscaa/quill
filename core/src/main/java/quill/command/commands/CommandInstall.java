@@ -1,6 +1,8 @@
 package quill.command.commands;
 
 import java.io.File;
+import java.util.HashMap;
+import java.util.Map;
 
 import fluff.commander.argument.ArgumentBuilder;
 import fluff.commander.argument.IArgument;
@@ -11,9 +13,10 @@ import fluff.files.FileHelper;
 import fluff.files.Folder;
 import fluff.json.JSON;
 import fluff.json.JSONObject;
+import fluff.platform.os.OS;
+import quill.QEnv;
 import quill.QFiles;
 import quill.Quill;
-import quill.bootstrap.QuillBootstrap;
 import quill.command.Command;
 import quill.command.CommandSource;
 import quill.command.QCommander;
@@ -55,10 +58,6 @@ public class CommandInstall extends Command {
 				System.out.println("Namespace argument missing");
 				return FAIL;
 			}
-			
-			if (QuillBootstrap.ENV_QPOST) {
-				return SUCCESS;
-			}
 
 			File file = new File(argFile);
 			File packageZip = null;
@@ -72,12 +71,18 @@ public class CommandInstall extends Command {
 
 				JSONObject quill = JSON.object(FileHelper.read(quillJsonFile).String());
 				JSONObject install = quill.getObject("install");
-				String run = install.getString("run");
+				JSONObject run = install.getObject("run");
+				Map<OS, String> commands = new HashMap<>();
+				for (Map.Entry<String, String> e : run.iterate(JSONObject::getString)) {
+					OS os = OS.getByName(e.getKey());
+					commands.put(os, e.getValue());
+				}
+				String command = commands.getOrDefault(OS.SYSTEM, commands.get(OS.UNKNOWN));
 				String from = install.getString("from");
 
-				if (run != null) {
+				if (command != null && !QEnv.POST_QUILL_UPDATE) {
 					try {
-						ProcessBuilder builder = new ProcessBuilder(StringArgumentInput.parseArgsFromString(run))
+						ProcessBuilder builder = new ProcessBuilder(StringArgumentInput.parseArgsFromString(command))
 								.directory(file).inheritIO();
 						Process process = builder.start();
 						int exit = process.waitFor();
@@ -105,22 +110,29 @@ public class CommandInstall extends Command {
 				return FAIL;
 			}
 
-			LocalPackage quillPackage = LocalPackage.from(QuillBootstrap.QUILL);
 			LocalRepositoryManager repos = Quill.INSTANCE.localRepositories;
-			LocalPackage p = repos.extract(packageZip, argNamespace);
-			if (p == null) {
-				return FAIL;
+			if (QEnv.POST_QUILL_UPDATE) {
+				repos.clean();
+				FileHelper.delete(new File(QFiles.TEMP, "quill-update"));
+
+				System.out.println("Quill updated to " + Quill.INSTANCE.quillPackage.getVersion());
+				return SUCCESS;
+			} else {
+				LocalPackage p = repos.extract(packageZip, argNamespace);
+				if (p == null) {
+					return FAIL;
+				}
+
+				Tag tag = Tag.of(p);
+				if (tag.equals(Tag.of(Quill.INSTANCE.quillPackage))) {
+					Folder quillUpdate = new Folder(QFiles.TEMP, "quill-update");
+					FileHelper.deleteContents(quillUpdate);
+					FileHelper.copy(p.getDir(), quillUpdate);
+
+					System.exit(10);
+				}
 			}
-			
-			Tag tag = Tag.of(p);
-			if (tag.equals(Tag.of(quillPackage))) {
-				Folder quillUpdate = new Folder(QFiles.TEMP, "quill-update");
-				FileHelper.deleteContents(quillUpdate);
-				FileHelper.copy(p.getDir(), quillUpdate);
-				
-				System.exit(10);
-			}
-			
+
 			// Quill.INSTANCE.localRepositories.install(packageZip, argNamespace);
 		}
 

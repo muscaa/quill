@@ -56,6 +56,11 @@ public class LocalRepositoryManager extends AbstractRepositoryManager<LocalPacka
 
 		return LocalPackage.from(dest, namespace);
 	}
+	
+	public void clean() {
+		File dest = new File(QFiles.TEMP, "install");
+		FileHelper.delete(dest);
+	}
 
 	@Override
 	public void refresh() {
