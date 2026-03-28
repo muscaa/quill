@@ -49,15 +49,14 @@ public class LocalRepositoryManager extends AbstractRepositoryManager<LocalPacka
 			}
 
 			ProcessBuilder builder = new ProcessBuilder("quillx", qtag.toString() + ":install", namespace,
-					p.getDir().getAbsolutePath()).directory(file).inheritIO();
+					p.getDir().getAbsolutePath()).inheritIO();
 			Process process = builder.start();
 			int exit = process.waitFor();
+			FileHelper.delete(p.getDir());
 
 			if (exit != 0) {
 				throw new Exception("Package install command returned " + exit);
 			}
-
-			FileHelper.delete(p.getDir());
 		} else {
 			FileHelper.delete(new File(QFiles.TEMP, "quill-update"));
 		}

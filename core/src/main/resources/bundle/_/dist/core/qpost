@@ -30,3 +30,5 @@ unset _COMMAND_ARGS
 unset QPOST
 
 rm -rf "$POST_RUN_DIR"
+
+return $POST_COMMAND
