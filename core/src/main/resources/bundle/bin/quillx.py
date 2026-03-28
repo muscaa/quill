@@ -1,3 +1,5 @@
+import sys
+
 from core import ARGS
 from quill.package import Package
 
@@ -21,3 +23,4 @@ def main():
     result = package.run(package_command, ARGS.copy())
     if not result:
         print("Failed to execute package command")
+        sys.exit(1)
