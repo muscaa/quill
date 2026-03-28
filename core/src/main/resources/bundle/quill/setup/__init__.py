@@ -72,11 +72,9 @@ class SetupWizard:
     def install(self) -> bool:
         try:
             if hasattr(self.module, "install"):
-                print(f"Installing {self.info.tag}...")
                 self._begin()
                 self.module.install()
                 self._end()
-                print(f"Done!")
                 return True
         except Exception as e:
             print(str(e))

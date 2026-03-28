@@ -10,13 +10,21 @@ def main(package: Package, args: list[str]):
     exit = java.run(package, "quill.Quill", args.copy())
     
     if exit == 10: # install update & restart
-        wizard = SetupWizard.load(TEMP / "quill-update", PACKAGE_QUILL.namespace)
-        if not wizard:
-            sys.exit(1)
+        namespace = PACKAGE_QUILL.namespace
+        dir = TEMP / "quill-update"
 
+        if not dir.exists() or not dir.is_dir():
+            raise Exception("Invalid directory")
+
+        wizard = SetupWizard.load(dir, namespace)
+        if not wizard:
+            raise Exception(f"Directory '{dir}' is not an installable package")
+        
+        print(f"Installing {wizard.info.tag}...")
         result = wizard.install()
         if not result:
-            sys.exit(1)
+            raise Exception(f"Failed to install package '{wizard.info.tag}'")
+        print(f"Done!")
 
         with open(TEMP / f"post-{core.ENV_QPID}/{exit}", "w") as f:
             f.write(f"""
