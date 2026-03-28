@@ -113,3 +113,17 @@ class SetupWizard:
         wizard = SetupWizard(info, module)
         _SETUP_WIZARDS[str(Path(path).resolve().absolute())] = wizard
         return wizard
+
+def install(dir: Path, namespace: str):
+    if not dir.exists() or not dir.is_dir():
+        raise Exception("Invalid install directory")
+
+    wizard = SetupWizard.load(dir, namespace)
+    if not wizard:
+        raise Exception(f"Directory '{dir}' is not an installable package")
+    
+    print(f"Installing '{wizard.info.tag}'...")
+    result = wizard.install()
+    if not result:
+        raise Exception(f"Failed to install package '{wizard.info.tag}'")
+    print(f"Done!")

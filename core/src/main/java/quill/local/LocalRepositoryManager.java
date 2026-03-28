@@ -48,8 +48,8 @@ public class LocalRepositoryManager extends AbstractRepositoryManager<LocalPacka
 				System.exit(10);
 			}
 
-			ProcessBuilder builder = new ProcessBuilder("quillx", qtag.toString() + ":install", namespace,
-					p.getDir().getAbsolutePath()).inheritIO();
+			ProcessBuilder builder = new ProcessBuilder("quillx", qtag.toString() + ":install",
+					p.getDir().getAbsolutePath(), namespace).inheritIO();
 			Process process = builder.start();
 			int exit = process.waitFor();
 			FileHelper.delete(p.getDir());
