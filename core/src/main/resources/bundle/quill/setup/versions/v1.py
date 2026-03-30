@@ -46,10 +46,10 @@ class SetupV1:
         _dest = _resolve(self.wizard.root_dir, self.wizard.package_dir, src if dest is None else dest)
 
         if clean:
-            self.wizard._add(delete.Delete(_dest))
+            self.wizard._add(delete.Delete(_dest, False))
         self.wizard._add(copy.Copy(_src, _dest))
     
     def delete(self, path: str | Path):
         _path = _resolve(self.wizard.root_dir, self.wizard.package_dir, path)
 
-        self.wizard._add(delete.Delete(_path))
+        self.wizard._add(delete.Delete(_path, True))
