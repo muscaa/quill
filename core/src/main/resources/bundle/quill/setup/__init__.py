@@ -2,10 +2,11 @@ from __future__ import annotations
 from abc import ABC, abstractmethod
 from pathlib import Path
 from types import ModuleType
+import shutil
 
 from core.utils import load_module
-from quill.package import PackageInfo
-from quill.files import TEMP, HOME, PACKAGES
+from quill.package import Package, PackageInfo
+from quill.files import HOME, PACKAGES
 
 class Command(ABC):
     def __init__(self):
@@ -34,8 +35,6 @@ class SetupWizard:
         self.info = info
         self.module = module
         self.dir = info.dir
-        # self.root_dir = TEMP / "_"
-        # self.package_dir = TEMP / "_/packages" / info.tag
         self.root_dir = HOME
         self.package_dir = PACKAGES / info.tag
 
@@ -64,8 +63,6 @@ class SetupWizard:
         commands = self._commands
         self._commands = None
 
-        # shutil.rmtree(self.root_dir, ignore_errors=True) # TODO remove
-
         for command in commands:
             command.execute()
 
@@ -80,13 +77,16 @@ class SetupWizard:
             print(str(e))
         return False
 
-    def uninstall(self) -> bool:
+    def uninstall(self, remove: bool) -> bool:
         try:
             if hasattr(self.module, "uninstall"):
                 self._begin()
                 self.module.uninstall()
                 self._end()
-                return True
+            if remove:
+                shutil.rmtree(self.dir, ignore_errors=True)
+                # TODO also remove every owned file/dir
+            return True
         except Exception as e:
             print(str(e))
         return False
@@ -122,8 +122,27 @@ def install(dir: Path, namespace: str):
     if not wizard:
         raise Exception(f"Directory '{dir}' is not an installable package")
     
+    package = Package.find(wizard.info.tag)
+    if package:
+        uninstall(package, remove=False)
+
     print(f"Installing '{wizard.info.tag}'...")
     result = wizard.install()
     if not result:
         raise Exception(f"Failed to install package '{wizard.info.tag}'")
+    print(f"Done!")
+
+def uninstall(package: Package, remove: bool = True):
+    dir = package.get_path()
+    if not dir.exists() or not dir.is_dir():
+        raise Exception("Invalid package")
+
+    wizard = SetupWizard.load(dir, package.namespace)
+    if not wizard:
+        raise Exception(f"Directory '{dir}' is not an uninstallable package")
+    
+    print(f"Uninstalling '{wizard.info.tag}'...")
+    result = wizard.uninstall(remove)
+    if not result:
+        raise Exception(f"Failed to uninstall package '{wizard.info.tag}'")
     print(f"Done!")

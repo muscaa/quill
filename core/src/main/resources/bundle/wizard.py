@@ -1,11 +1,7 @@
-from quill.setup import SetupWizard
 from quill.setup.versions import V1
 
 def install():
-    wizard = SetupWizard.get(__file__)
-    if not wizard:
-        raise Exception("Unknown setup")
-    v1 = V1(wizard)
+    v1 = V1(__file__)
     v1.copy("wizard.py")
     v1.copy("package.json")
 
@@ -29,3 +25,22 @@ def install():
     v1.copy("_/core/", "@/core/")
     v1.copy("_/dist/core/", "@/dist/core/")
     v1.copy("_/main.py", "@/main.py")
+
+def uninstall():
+    v1 = V1(__file__)
+    v1.copy("wizard.py")
+    v1.copy("package.json")
+
+    v1.delete("@/bin/quill")
+    v1.delete("@/bin/quill.cmd")
+    v1.delete("@/bin/quillx")
+    v1.delete("@/bin/quillx.cmd")
+
+    v1.delete("bin/")
+    v1.delete("quill/")
+    v1.delete("bootstrap4j/")
+    v1.delete("java/")
+
+    v1.delete("@/core/")
+    v1.delete("@/dist/core/")
+    v1.delete("@/main.py")

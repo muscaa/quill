@@ -25,24 +25,25 @@ def _find_parent(root: Path, path: Path) -> tuple[Path | None, Path]:
 
     return (None, path)
 
-def get_owns_path(root: Path, path: Path) -> Path | None:
+def get_owns_path(root: Path, path: Path, direct: bool = False) -> Path | None:
     parent, child = _find_parent(root, path)
     if not parent:
         return None
     
-    db_dir = root / "db"
+    db_dir = root / "db" / "owns"
     parent = parent.relative_to(root)
     
-    file = child
-    while len(file.parts) > 0:
-        file_parent = file.parent
-        file_name = file.name
+    if not direct:
+        file = child
+        while len(file.parts) > 0:
+            file_parent = file.parent
+            file_name = file.name
 
-        owns = db_dir / parent / file_parent / (file_name + SUFFIX)
-        if owns.exists():
-            return owns
+            owns = db_dir / parent / file_parent / (file_name + SUFFIX)
+            if owns.exists():
+                return owns
 
-        file = file_parent
+            file = file_parent
 
     return db_dir / parent / child.parent / (child.name + SUFFIX)
 

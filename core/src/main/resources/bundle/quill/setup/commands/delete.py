@@ -17,3 +17,7 @@ class Delete(Command):
             shutil.rmtree(self.path, ignore_errors=True)
         else:
             self.path.unlink(missing_ok=True)
+        
+        owns_path = owns.get_owns_path(self.wizard.root_dir, self.path, direct=True)
+        if owns_path:
+            owns_path.unlink(missing_ok=True)
