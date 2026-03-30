@@ -28,8 +28,8 @@ def install():
 
 def uninstall():
     v1 = V1(__file__)
-    v1.copy("wizard.py")
-    v1.copy("package.json")
+    v1.delete("wizard.py")
+    v1.delete("package.json")
 
     v1.delete("@/bin/quill")
     v1.delete("@/bin/quill.cmd")
