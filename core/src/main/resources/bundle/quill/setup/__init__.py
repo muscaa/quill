@@ -118,18 +118,24 @@ def install(dir: Path, namespace: str):
     if not dir.exists() or not dir.is_dir():
         raise Exception("Invalid install directory")
 
-    wizard = SetupWizard.load(dir, namespace)
-    if not wizard:
+    iwizard = SetupWizard.load(dir, namespace)
+    if not iwizard:
         raise Exception(f"Directory '{dir}' is not an installable package")
     
-    package = Package.find(wizard.info.tag)
+    print(f"Installing '{iwizard.info.tag}'...")
+    package = Package.find(iwizard.info.tag)
     if package:
-        uninstall(package, remove=False)
+        uwizard = SetupWizard.load(package.get_path(), package.namespace)
+        if not uwizard:
+            raise Exception(f"Directory '{package.get_path()}' is not an uninstallable package")
+        
+        uresult = uwizard.uninstall(False)
+        if not uresult:
+            raise Exception(f"Failed to uninstall package '{uwizard.info.tag}'")
 
-    print(f"Installing '{wizard.info.tag}'...")
-    result = wizard.install()
-    if not result:
-        raise Exception(f"Failed to install package '{wizard.info.tag}'")
+    iresult = iwizard.install()
+    if not iresult:
+        raise Exception(f"Failed to install package '{iwizard.info.tag}'")
     print(f"Done!")
 
 def uninstall(package: Package, remove: bool = True):
@@ -137,12 +143,12 @@ def uninstall(package: Package, remove: bool = True):
     if not dir.exists() or not dir.is_dir():
         raise Exception("Invalid package")
 
-    wizard = SetupWizard.load(dir, package.namespace)
-    if not wizard:
+    uwizard = SetupWizard.load(dir, package.namespace)
+    if not uwizard:
         raise Exception(f"Directory '{dir}' is not an uninstallable package")
     
-    print(f"Uninstalling '{wizard.info.tag}'...")
-    result = wizard.uninstall(remove)
-    if not result:
-        raise Exception(f"Failed to uninstall package '{wizard.info.tag}'")
+    print(f"Uninstalling '{uwizard.info.tag}'...")
+    uresult = uwizard.uninstall(remove)
+    if not uresult:
+        raise Exception(f"Failed to uninstall package '{uwizard.info.tag}'")
     print(f"Done!")
