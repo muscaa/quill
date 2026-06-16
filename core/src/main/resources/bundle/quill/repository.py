@@ -38,4 +38,4 @@ class Repository:
 
         return repositories
     
-REPOSITORIES = Repository.repositories(CONFIG / "repositories.txt")
+REPOSITORIES = Repository.repositories(CONFIG / "repositories.conf")

@@ -18,7 +18,7 @@ public class RemoteRepositoryManager extends AbstractRepositoryManager<RemotePac
 	public void refresh() {
 		super.refresh();
 
-		File configFile = new File(QFiles.CONFIG, "repositories.txt");
+		File configFile = new File(QFiles.CONFIG, "repositories.conf");
 
 		try (BufferedReader br = new BufferedReader(new FileReader(configFile))) {
 			String rawLine;
