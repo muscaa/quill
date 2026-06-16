@@ -1,5 +1,7 @@
 package quill;
 
+import org.fusesource.jansi.AnsiConsole;
+
 import fluff.core.FluffCore;
 import quill.bootstrap.QuillBootstrap;
 import quill.command.QCommander;
@@ -18,6 +20,7 @@ public class Quill {
 
 	private void init() throws Exception {
 		FluffCore.init();
+		AnsiConsole.systemInstall();
 
 		localRepositories.refresh();
 		remoteRepositories.refresh();

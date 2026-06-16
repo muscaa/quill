@@ -10,6 +10,7 @@ import quill.Quill;
 import quill.command.Command;
 import quill.command.CommandSource;
 import quill.command.QCommander;
+import quill.text.Text;
 
 public class CommandInstall extends Command {
 
@@ -42,7 +43,7 @@ public class CommandInstall extends Command {
 		} else if (argFile != null) {
 			String argNamespace = args.get(ARG_NAMESPACE);
 			if (argNamespace == null) {
-				System.out.println("Namespace argument missing");
+				source.print(Text.fg(Text.RED).s("Namespace argument missing"));
 				return FAIL;
 			}
 
@@ -51,7 +52,7 @@ public class CommandInstall extends Command {
 			try {
 				Quill.INSTANCE.localRepositories.install(file, argNamespace);
 			} catch (Exception e) {
-				System.out.println(e.getMessage());
+				source.print(Text.fg(Text.RED).s(e.getMessage()));
 				return FAIL;
 			}
 		}

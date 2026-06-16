@@ -15,7 +15,7 @@ public class QCommander extends Commander<QCommander, CommandSource> {
 
 	public static final IArgument<Boolean> ARG_VERSION = ArgumentBuilder.Boolean("--version", "-v").build();
 
-	public final CommandSource console = new CommandSource();
+	public final CommandSource console = new ConsoleCommandSource();
 
 	public QCommander() {
 		super(false, "quill");

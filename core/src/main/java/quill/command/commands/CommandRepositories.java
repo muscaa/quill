@@ -10,6 +10,7 @@ import quill.command.Command;
 import quill.command.CommandSource;
 import quill.command.QCommander;
 import quill.remote.RemoteRepository;
+import quill.text.Text;
 
 public class CommandRepositories extends Command {
 
@@ -25,9 +26,9 @@ public class CommandRepositories extends Command {
 			String key = e.getKey();
 			List<RemoteRepository> value = e.getValue();
 			
-			System.out.println(key);
+			source.print(Text.fg(Text.GREEN).s(key));
 			for (RemoteRepository r : value) {
-				System.out.println("    " + r.getUrl());
+				source.print(Text.fg(Text.DARK_GRAY).s("    " + r.getUrl()));
 			}
 		}
 

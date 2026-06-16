@@ -11,6 +11,7 @@ import quill.command.QCommander;
 import quill.info.Release;
 import quill.info.TagCriteria;
 import quill.local.LocalPackage;
+import quill.text.Text;
 
 public class CommandPackages extends Command {
 
@@ -24,9 +25,9 @@ public class CommandPackages extends Command {
 
 		for (LocalPackage p : packages) {
 			Release release = Release.of(p);
-
-			System.out.println(release);
-			System.out.println("    " + p.getDescription());
+			
+			source.print(Text.fg(Text.GREEN).s(release));
+			source.print(Text.fg(Text.DARK_GRAY).s("    " + p.getDescription()));
 		}
 
 		return SUCCESS;

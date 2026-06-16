@@ -8,6 +8,7 @@ dependencies {
     api("dev.musca:fluff-commons:2.0.0")
     api("dev.musca:fluff-commander:2.0.0")
     api("dev.musca:fluff-platform:2.0.1")
+    api("org.fusesource.jansi:jansi:2.4.3")
 }
 
 tasks.processResources {
