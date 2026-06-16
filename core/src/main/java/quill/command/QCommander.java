@@ -9,6 +9,7 @@ import fluff.commander.command.CommandException;
 import quill.Quill;
 import quill.command.commands.CommandInstall;
 import quill.command.commands.CommandPackages;
+import quill.command.commands.CommandRepositories;
 
 public class QCommander extends Commander<QCommander, CommandSource> {
 
@@ -26,6 +27,7 @@ public class QCommander extends Commander<QCommander, CommandSource> {
 
 		command(new CommandInstall());
 		command(new CommandPackages());
+		command(new CommandRepositories());
 	}
 
 	@Override

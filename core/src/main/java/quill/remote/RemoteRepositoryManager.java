@@ -7,6 +7,7 @@ import java.net.URI;
 import java.net.URL;
 import java.util.LinkedList;
 import java.util.List;
+import java.util.Map;
 
 import quill.AbstractRepositoryManager;
 import quill.QFiles;
@@ -39,5 +40,9 @@ public class RemoteRepositoryManager extends AbstractRepositoryManager<RemotePac
 			}
 		} catch (Exception e) {
 		}
+	}
+	
+	public Map<String, List<RemoteRepository>> getRepositories() {
+		return repositories;
 	}
 }
