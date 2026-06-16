@@ -51,7 +51,9 @@ public class LocalPackage implements IPackage {
 
 			return true;
 		} catch (Exception e) {
-			System.out.println(e.getMessage());
+			Throwable t = e.getCause();
+			
+			System.out.println(t.getMessage());
 		}
 
 		return false;

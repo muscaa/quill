@@ -3,6 +3,7 @@ package quill.command;
 import fluff.commander.Commander;
 import fluff.commander.argument.ArgumentBuilder;
 import fluff.commander.argument.IArgument;
+import fluff.commander.argument.StringArrayArgumentInput;
 import fluff.commander.command.CommandArguments;
 import fluff.commander.command.CommandException;
 import quill.Quill;
@@ -12,6 +13,8 @@ import quill.command.commands.CommandPackages;
 public class QCommander extends Commander<QCommander, CommandSource> {
 
 	public static final IArgument<Boolean> ARG_VERSION = ArgumentBuilder.Boolean("--version", "-v").build();
+
+	public final CommandSource console = new CommandSource();
 
 	public QCommander() {
 		super(false, "quill");
@@ -24,7 +27,7 @@ public class QCommander extends Commander<QCommander, CommandSource> {
 		command(new CommandInstall());
 		command(new CommandPackages());
 	}
-	
+
 	@Override
 	public int onPreAction(QCommander c, CommandSource source, CommandArguments args) throws CommandException {
 		if (args.Boolean(ARG_VERSION)) {
@@ -32,5 +35,9 @@ public class QCommander extends Commander<QCommander, CommandSource> {
 			return SUCCESS;
 		}
 		return super.onPreAction(c, source, args);
+	}
+
+	public int executeConsole(String[] args) throws CommandException {
+		return execute(console, new StringArrayArgumentInput(args));
 	}
 }
