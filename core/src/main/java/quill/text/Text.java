@@ -22,6 +22,11 @@ public interface Text {
 	public static final Color DARK_CYAN = Color.CYAN.darker();
 	public static final Color CYAN = Color.CYAN;
 	
+	public static final TextTab.Type TAB_BLANK = TextTab.Type.BLANK;
+	public static final TextTab.Type TAB_PIPE = TextTab.Type.PIPE;
+	public static final TextTab.Type TAB_BRANCH = TextTab.Type.BRANCH;
+	public static final TextTab.Type TAB_LAST = TextTab.Type.LAST;
+	
 	void to(TextTransform transform);
 
 	public static TextBuilder s(Object o) {
@@ -34,5 +39,9 @@ public interface Text {
 
 	public static TextBuilder bg(Color color) {
 		return new TextBuilder().bg(color);
+	}
+	
+	public static TextBuilder tab(TextTab.Type type) {
+		return new TextBuilder().tab(type);
 	}
 }

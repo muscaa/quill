@@ -32,4 +32,8 @@ public class TextBuilder {
 	public TextBuilder bg(Color color) {
 		return add(new TextBackground(color));
 	}
+	
+	public TextBuilder tab(TextTab.Type type) {
+		return add(new TextTab(type));
+	}
 }

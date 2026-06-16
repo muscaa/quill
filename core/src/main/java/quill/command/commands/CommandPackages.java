@@ -27,7 +27,7 @@ public class CommandPackages extends Command {
 			Release release = Release.of(p);
 			
 			source.print(Text.fg(Text.GREEN).s(release));
-			source.print(Text.fg(Text.DARK_GRAY).s("    " + p.getDescription()));
+			source.print(Text.fg(Text.DARK_GRAY).tab(Text.TAB_LAST).s(p.getDescription()));
 		}
 
 		return SUCCESS;

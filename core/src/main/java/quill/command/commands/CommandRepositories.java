@@ -28,7 +28,7 @@ public class CommandRepositories extends Command {
 			
 			source.print(Text.fg(Text.GREEN).s(key));
 			for (RemoteRepository r : value) {
-				source.print(Text.fg(Text.DARK_GRAY).s("    " + r.getUrl()));
+				source.print(Text.fg(Text.DARK_GRAY).tab(Text.TAB_LAST).s(r.getUrl()));
 			}
 		}
 

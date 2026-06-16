@@ -69,4 +69,9 @@ public class TextToAnsiTransform implements TextTransform {
 		
 		ansi = func != null ? func.invoke(ansi) : ansi.bgRgb(text.color().getRGB());
 	}
+	
+	@Override
+	public void onTab(TextTab text) {
+		ansi = ansi.a(text.type().toString());
+	}
 }

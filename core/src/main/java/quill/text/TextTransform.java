@@ -7,4 +7,6 @@ public interface TextTransform {
 	void onForeground(TextForeground text);
 	
 	void onBackground(TextBackground text);
+	
+	void onTab(TextTab text);
 }
