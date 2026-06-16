@@ -55,7 +55,7 @@ public class RemoteRepository extends AbstractRepository<RemotePackage> {
 			
 			JSONArray packages = repository.getArray("packages");
 			for (String pkg : packages.iterate(JSONArray::getString)) {
-				readPackage(isValidUrl(pkg) ? URI.create(pkg) : uri.resolve("packages/" + pkg));
+				readPackage(isValidUrl(pkg) ? URI.create(pkg) : uri.resolve("packages/" + pkg + "/"));
 			}
 			
 			JSONArray repositories = repository.getArray("repositories");
@@ -74,6 +74,7 @@ public class RemoteRepository extends AbstractRepository<RemotePackage> {
 
 			readRepository(uri);
 		} catch (URISyntaxException | IOException e) {
+			System.out.println(e.getMessage());
 		}
 	}
 
