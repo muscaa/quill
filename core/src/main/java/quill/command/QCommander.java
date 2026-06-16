@@ -10,6 +10,7 @@ import quill.Quill;
 import quill.command.commands.CommandInstall;
 import quill.command.commands.CommandPackages;
 import quill.command.commands.CommandRepositories;
+import quill.command.commands.CommandSearch;
 
 public class QCommander extends Commander<QCommander, CommandSource> {
 
@@ -28,6 +29,7 @@ public class QCommander extends Commander<QCommander, CommandSource> {
 		command(new CommandInstall());
 		command(new CommandPackages());
 		command(new CommandRepositories());
+		command(new CommandSearch());
 	}
 
 	@Override
