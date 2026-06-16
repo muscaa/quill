@@ -1,0 +1,24 @@
+name: Build
+on:
+  push:
+    tags:
+      - "v*.*.*"
+jobs:
+  build:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v6
+
+      - name: Setup Gradle
+        uses: gradle/actions/setup-gradle@v5
+
+      - name: Make gradlew executable & display version
+        run: chmod +x ./gradlew && ./gradlew --version
+
+      - name: Build & bundle
+        run: ./gradlew bundle
+
+      - name: Release
+        uses: softprops/action-gh-release@v3
+        with:
+          files: build/quill/bundle/quill-bundle.zip
