@@ -15,6 +15,20 @@ tasks.processResources {
     exclude("bundle/**")
 }
 
+val generateBundleResources = tasks.register("generateBundleResources") {
+	val outputDir = layout.buildDirectory.dir("quill/generated/bundle")
+	outputs.dir(outputDir)
+	
+	doLast {
+		val dir = outputDir.get().asFile
+		dir.mkdirs()
+		
+		val core = dir.resolve("_/core")
+		core.mkdirs()
+		core.resolve("version.txt").writeText("${project.version}")
+	}
+}
+
 tasks.register<Sync>("preBundle") {
     dependsOn("jar")
     into(layout.buildDirectory.dir("quill/pre-bundle"))
@@ -29,4 +43,5 @@ tasks.register<Sync>("preBundle") {
     }
 
     from("src/main/resources/bundle")
+    from(generateBundleResources)
 }
