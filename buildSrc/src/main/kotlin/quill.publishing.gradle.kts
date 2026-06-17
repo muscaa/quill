@@ -8,7 +8,10 @@ version = System.getenv("GITHUB_REF_NAME")?.removePrefix("v") ?: "0.0.1-SNAPSHOT
 mavenPublishing {
     publishToMavenCentral(/*automaticRelease = true*/)
     signAllPublications()
-    coordinates(project.group.toString(), project.name, project.version.toString())
+    coordinates(
+		project.group.toString(),
+		if (project == rootProject) project.name else "${rootProject.name}-${project.name}",
+		project.version.toString())
 
     val developerId = "muscaa"
     val developerName = "musca"
