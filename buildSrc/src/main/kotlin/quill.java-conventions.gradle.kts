@@ -3,8 +3,6 @@ plugins {
     id("eclipse")
 }
 
-group = rootProject.group
-version = rootProject.version
 eclipse.project.name = "${rootProject.name}-${project.name}"
 
 java {

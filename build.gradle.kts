@@ -3,9 +3,6 @@ plugins {
     id("quill.publishing")
 }
 
-group = "dev.musca"
-version = System.getenv("GITHUB_REF_NAME")?.removePrefix("v") ?: "0.0.1-SNAPSHOT"
-
 javaPlatform {
     allowDependencies()
 }
