@@ -78,7 +78,7 @@ class Package:
         }
         default_priority = len(priority_map)
 
-        subdirs = [d for d in dir.iterdir() if d.is_dir()]
+        subdirs = [d for d in dir.iterdir() if d.is_dir()] if dir.exists() else []
         sorted_subdirs = sorted(subdirs, key = lambda d: (priority_map.get(d.name, default_priority), d.name.lower()))
 
         for namespace_path in sorted_subdirs:

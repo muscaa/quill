@@ -38,16 +38,16 @@ class SetupV1:
             _dest = self.wizard.root_dir / "bin" / _src.name
 
             self.wizard._add(owns.Owns(_dest))
-            self.wizard._add(copy.Copy(_src, _dest))
+            self.wizard._add(copy.Copy(_src, _dest, True))
             self.wizard._add(chmod.Chmod(_dest, exec=True))
 
-    def copy(self, src: str | Path, dest: str | Path | None = None, clean: bool = True):
+    def copy(self, src: str | Path, dest: str | Path | None = None, clean: bool = True, overwrite: bool = True):
         _src = _resolve(self.wizard.root_dir, self.wizard.dir, src)
         _dest = _resolve(self.wizard.root_dir, self.wizard.package_dir, src if dest is None else dest)
 
-        if clean:
+        if clean and overwrite:
             self.wizard._add(delete.Delete(_dest, False))
-        self.wizard._add(copy.Copy(_src, _dest))
+        self.wizard._add(copy.Copy(_src, _dest, overwrite))
     
     def delete(self, path: str | Path):
         _path = _resolve(self.wizard.root_dir, self.wizard.package_dir, path)

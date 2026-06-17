@@ -21,10 +21,12 @@ def install():
         "@/core/",
         "@/dist/core/",
         "@/main.py",
+        "@/config/repositories.conf",
     ])
     v1.copy("_/core/", "@/core/")
     v1.copy("_/dist/core/", "@/dist/core/")
     v1.copy("_/main.py", "@/main.py")
+    v1.copy("_/config/repositories.conf", "@/config/repositories.conf", overwrite=False)
 
 def uninstall():
     v1 = V1(__file__)
