@@ -11,6 +11,7 @@ public class QFiles {
 	public static final Folder PACKAGES = new Folder(HOME, "packages");
 	public static final Folder CONFIG = new Folder(HOME, "config");
 	public static final Folder TEMP = new Folder(HOME, "temp");
+	public static final Folder TEMP_DOWNLOAD = new Folder(TEMP, "download");
 	public static final Folder DIST = new Folder(HOME, "dist");
 	public static final Folder DB = new Folder(HOME, "db");
 	public static final Folder DB_OWNS = new Folder(DB, "owns");
