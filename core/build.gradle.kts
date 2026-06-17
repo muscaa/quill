@@ -1,5 +1,6 @@
 plugins {
     id("quill.java-conventions")
+    id("quill.publishing")
 }
 
 dependencies {
@@ -9,6 +10,13 @@ dependencies {
     api("dev.musca:fluff-commander:2.0.0")
     api("dev.musca:fluff-platform:2.0.1")
     api("org.fusesource.jansi:jansi:2.4.3")
+}
+
+mavenPublishing {
+	pom {
+		name.set("Quill Core")
+		description.set("Quill CLI app core")
+	}
 }
 
 tasks.processResources {

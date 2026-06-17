@@ -1,0 +1,39 @@
+plugins {
+    id("com.vanniktech.maven.publish")
+}
+
+mavenPublishing {
+    publishToMavenCentral(/*automaticRelease = true*/)
+    signAllPublications()
+    coordinates(project.group.toString(), project.name, project.version.toString())
+
+    val developerId = "muscaa"
+    val developerName = "musca"
+    val projectId = rootProject.name
+
+    pom {
+        // name.set("Quill")
+        // description.set("Quill CLI app")
+        inceptionYear.set("2024")
+        url.set("https://github.com/${developerId}/${projectId}/")
+        licenses {
+            license {
+                name.set("Apache License, Version 2.0")
+                url.set("http://www.apache.org/licenses/LICENSE-2.0.txt")
+                distribution.set("http://www.apache.org/licenses/LICENSE-2.0.txt")
+            }
+        }
+        developers {
+            developer {
+                id.set(developerId)
+                name.set(developerName)
+                url.set("https://github.com/${developerId}/")
+            }
+        }
+        scm {
+            url.set("https://github.com/${developerId}/${projectId}/")
+            connection.set("scm:git:git://github.com/${developerId}/${projectId}.git")
+            developerConnection.set("scm:git:ssh://git@github.com/${developerId}/${projectId}.git")
+        }
+    }
+}

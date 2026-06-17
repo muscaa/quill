@@ -1,5 +1,6 @@
 plugins {
     id("quill.java-conventions")
+    id("quill.publishing")
 	id("application")
 }
 
@@ -8,6 +9,13 @@ val mainClassName = "quill.bootstrap.QuillBootstrap"
 dependencies {
 	shade("dev.musca:fluff-loader:2.0.1") {
 		exclude(group = "dev.musca", module = "fluff-core")
+	}
+}
+
+mavenPublishing {
+	pom {
+		name.set("Quill Bootstrap")
+		description.set("Quill CLI app bootstrap")
 	}
 }
 

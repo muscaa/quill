@@ -1,4 +1,26 @@
+plugins {
+    `java-platform`
+    id("quill.publishing")
+}
+
+group = "dev.musca"
 version = System.getenv("GITHUB_REF_NAME")?.removePrefix("v") ?: "0.0.1-SNAPSHOT"
+
+javaPlatform {
+    allowDependencies()
+}
+
+dependencies {
+    api(project(":bootstrap"))
+    api(project(":core"))
+}
+
+mavenPublishing {
+	pom {
+		name.set("Quill")
+		description.set("Quill CLI app")
+	}
+}
 
 val generatePackageJson = tasks.register("generatePackageJson") {
 	val outputFile = layout.buildDirectory.file("quill/generated/package.json")
