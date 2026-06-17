@@ -5,7 +5,7 @@ plugins {
 }
 
 group = "dev.musca.${rootProject.name}"
-version = System.getenv("GITHUB_REF_NAME")?.removePrefix("v") ?: "0.0.1-SNAPSHOT"
+version = rootProject.version
 eclipse.project.name = "${rootProject.name}-${project.name}"
 
 java {
