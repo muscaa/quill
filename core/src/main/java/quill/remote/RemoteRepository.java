@@ -30,13 +30,16 @@ import quill.info.Version;
 
 public class RemoteRepository extends AbstractRepository<RemotePackage> {
 
+	public static final String VERSION = "v1";
+
 	protected final URL url;
 	protected final File cache;
 
 	public RemoteRepository(String namespace, URL url) {
 		super(namespace);
 		this.url = url;
-		this.cache = new File(QFiles.DB_REPOS, Hashing.SHA3_256.hash(namespace + " " + url.toString()).format(ICryptoFormat.HEX).String());
+		this.cache = new File(QFiles.DB_REPOS,
+				Hashing.SHA3_256.hash(namespace + " " + url.toString()).format(ICryptoFormat.HEX).String());
 
 		refresh();
 	}
@@ -51,14 +54,9 @@ public class RemoteRepository extends AbstractRepository<RemotePackage> {
 			String author = pkg.getString("author");
 			String description = pkg.getString("description");
 			Version latest = Version.of(pkg.getString("latest"));
-			Map<Version, URI> versions = pkg.getObject("versions")
-					.getMap()
-					.entrySet()
-					.stream()
-					.collect(Collectors.toMap(
-							(e) -> Version.of(e.getKey()),
-							(e) -> URI.create((String) e.getValue())));
-			
+			Map<Version, URI> versions = pkg.getObject("versions").getMap().entrySet().stream()
+					.collect(Collectors.toMap((e) -> Version.of(e.getKey()), (e) -> URI.create((String) e.getValue())));
+
 			out.LenString(author);
 			out.LenString(id);
 			out.LenString(description);
@@ -68,11 +66,11 @@ public class RemoteRepository extends AbstractRepository<RemotePackage> {
 				out.LenString(e.getKey().toString());
 				out.LenString(e.getValue().toString());
 			}
-			
+
 			packages.add(new RemotePackage(namespace, author, id, latest, description, versions));
 		}
 	}
-	
+
 	private void fetchRepository(Queue<URI> repositoriesQueue, Queue<URI> packagesQueue, URI uri) throws IOException {
 		URL repositoryUrl = uri.resolve("repository.json").toURL();
 		try (InputStream is = repositoryUrl.openStream()) {
@@ -93,22 +91,23 @@ public class RemoteRepository extends AbstractRepository<RemotePackage> {
 
 	public void fetch() {
 		super.refresh();
-		
+
 		try (BinaryOutputStream out = new BinaryOutputStream(new FileOutputStream(cache))) {
 			Queue<URI> repositoriesQueue = new ArrayDeque<>();
 			Queue<URI> packagesQueue = new ArrayDeque<>();
-			
+
 			repositoriesQueue.offer(url.toURI());
 			while (!repositoriesQueue.isEmpty()) {
 				URI uri = repositoriesQueue.poll();
-				
+
 				fetchRepository(repositoriesQueue, packagesQueue, uri);
 			}
-			
+
+			out.LenString(VERSION);
 			out.Int(packagesQueue.size());
 			while (!packagesQueue.isEmpty()) {
 				URI uri = packagesQueue.poll();
-				
+
 				fetchPackage(out, uri);
 			}
 		} catch (URISyntaxException | IOException e) {
@@ -119,29 +118,32 @@ public class RemoteRepository extends AbstractRepository<RemotePackage> {
 	@Override
 	public void refresh() {
 		super.refresh();
-		
+
 		if (!cache.exists()) {
 			return;
 		}
-		
+
 		try (BinaryInputStream in = new BinaryInputStream(new FileInputStream(cache))) {
-			int size = in.Int();
-			for (int i = 0; i < size; i++) {
-				String author = in.LenString();
-				String id = in.LenString();
-				String description = in.LenString();
-				Version latest = Version.of(in.LenString());
-				Map<Version, URI> versions = new HashMap<>();
-				
-				int versionsSize = in.Int();
-				for (int j = 0; j < versionsSize; j++) {
-					Version version = Version.of(in.LenString());
-					URI uri = URI.create(in.LenString());
-					
-					versions.put(version, uri);
+			String fileVersion = in.LenString();
+			if (fileVersion.equals(VERSION)) {
+				int size = in.Int();
+				for (int i = 0; i < size; i++) {
+					String author = in.LenString();
+					String id = in.LenString();
+					String description = in.LenString();
+					Version latest = Version.of(in.LenString());
+					Map<Version, URI> versions = new HashMap<>();
+
+					int versionsSize = in.Int();
+					for (int j = 0; j < versionsSize; j++) {
+						Version version = Version.of(in.LenString());
+						URI uri = URI.create(in.LenString());
+
+						versions.put(version, uri);
+					}
+
+					packages.add(new RemotePackage(namespace, author, id, latest, description, versions));
 				}
-				
-				packages.add(new RemotePackage(namespace, author, id, latest, description, versions));
 			}
 		} catch (IOException e) {
 			System.out.println(e.getMessage());
@@ -151,7 +153,7 @@ public class RemoteRepository extends AbstractRepository<RemotePackage> {
 	public URL getUrl() {
 		return url;
 	}
-	
+
 	@Override
 	public String toString() {
 		return StringUtils.format("RemoteRepository(namespace=\"${}\", url=\"${}\")", namespace, url);
