@@ -2,7 +2,6 @@ package quill.command.commands;
 
 import java.io.File;
 import java.io.FileOutputStream;
-import java.io.IOException;
 import java.io.InputStream;
 import java.net.URI;
 import java.util.List;
@@ -70,18 +69,13 @@ public class CommandInstall extends Command {
 			try (InputStream is = uri.toURL().openStream();
 					FileOutputStream fos = new FileOutputStream(file)) {
 				is.transferTo(fos);
-			} catch (IOException e) {
-				source.print(Text.fg(Text.RED).s(e.getMessage()));
-				return FAIL;
-			} finally {
-				FileHelper.delete(file);
-			}
-			
-			try {
+				
 				Quill.INSTANCE.localRepositories.install(file, argNamespace != null ? argNamespace : pkg.getNamespace());
 			} catch (Exception e) {
 				source.print(Text.fg(Text.RED).s(e.getMessage()));
 				return FAIL;
+			} finally {
+				FileHelper.delete(file);
 			}
 			
 			return SUCCESS;
