@@ -9,4 +9,6 @@ public interface IRepositoryManager<P extends IPackage, R extends IRepository<P>
 	List<P> find(TagCriteria criteria);
 
 	void refresh();
+	
+	int getTotalPackages();
 }

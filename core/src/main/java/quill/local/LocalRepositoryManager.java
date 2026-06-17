@@ -137,7 +137,7 @@ public class LocalRepositoryManager extends AbstractRepositoryManager<LocalPacka
 		super.refresh();
 
 		Map<String, Integer> priorityMap = new LinkedHashMap<>();
-		File configFile = new File(QFiles.CONFIG, "repositories.txt");
+		File configFile = new File(QFiles.CONFIG, "repositories.conf");
 		try (BufferedReader br = new BufferedReader(new FileReader(configFile))) {
 			int priority = 0;
 			String rawLine;

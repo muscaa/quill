@@ -56,4 +56,13 @@ public abstract class AbstractRepositoryManager<P extends IPackage, R extends Ab
 	public void refresh() {
 		repositories.clear();
 	}
+
+	@Override
+	public int getTotalPackages() {
+		return repositories.values()
+				.stream()
+				.flatMap(List::stream)
+				.mapToInt((e) -> e.getTotalPackages())
+				.sum();
+	}
 }

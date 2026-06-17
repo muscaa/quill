@@ -1,6 +1,7 @@
 package quill.remote;
 
-import java.net.URL;
+import java.net.URI;
+import java.util.Map;
 import java.util.Objects;
 
 import fluff.core.utils.StringUtils;
@@ -12,17 +13,17 @@ public class RemotePackage implements IPackage {
 	private final String namespace;
 	private final String author;
 	private final String id;
-	private final Version version;
+	private final Version latest;
 	private final String description;
-	private final URL url;
+	private final Map<Version, URI> versions;
 
-	public RemotePackage(String namespace, String author, String id, Version version, String description, URL url) {
+	public RemotePackage(String namespace, String author, String id, Version latest, String description, Map<Version, URI> versions) {
 		this.namespace = namespace;
 		this.author = author;
 		this.id = id;
-		this.version = version;
+		this.latest = latest;
 		this.description = description;
-		this.url = url;
+		this.versions = versions;
 	}
 
 	@Override
@@ -42,7 +43,7 @@ public class RemotePackage implements IPackage {
 
 	@Override
 	public Version getVersion() {
-		return version;
+		return latest;
 	}
 
 	@Override
@@ -50,15 +51,15 @@ public class RemotePackage implements IPackage {
 		return description;
 	}
 
-	public URL getUrl() {
-		return url;
+	public Map<Version, URI> getVersions() {
+		return versions;
 	}
 
 	@Override
 	public String toString() {
 		return StringUtils.format(
-				"RemotePackage(namespace=\"${}\", author=\"${}\", id=\"${}\", version=\"${}\", description=\"${}\", url=\"${}\")",
-				namespace, author, id, version, description, url);
+				"RemotePackage(namespace=\"${}\", author=\"${}\", id=\"${}\", latest=\"${}\", description=\"${}\", versions=\"${}\")",
+				namespace, author, id, latest, description, versions);
 	}
 
 	@Override
@@ -67,11 +68,11 @@ public class RemotePackage implements IPackage {
 			return false;
 		}
 		return namespace.equals(rp.namespace) && author.equals(rp.author) && id.equals(rp.id)
-				&& version.equals(rp.version) && description.equals(rp.description) && url.equals(rp.url);
+				&& latest.equals(rp.latest) && description.equals(rp.description) && versions.equals(rp.versions);
 	}
 
 	@Override
 	public int hashCode() {
-		return Objects.hash(namespace, author, id, version, description, url);
+		return Objects.hash(namespace, author, id, latest, description, versions);
 	}
 }

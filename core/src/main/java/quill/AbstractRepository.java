@@ -43,7 +43,12 @@ public abstract class AbstractRepository<P extends IPackage> implements IReposit
 	public String getNamespace() {
 		return namespace;
 	}
-
+	
+	@Override
+	public int getTotalPackages() {
+		return packages.size();
+	}
+	
 	@Override
 	public String toString() {
 		return StringUtils.format("AbstractRepository(namespace=\"${}\")", namespace);

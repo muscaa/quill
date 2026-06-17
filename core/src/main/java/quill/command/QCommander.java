@@ -7,6 +7,7 @@ import fluff.commander.argument.StringArrayArgumentInput;
 import fluff.commander.command.CommandArguments;
 import fluff.commander.command.CommandException;
 import quill.Quill;
+import quill.command.commands.CommandFetch;
 import quill.command.commands.CommandInstall;
 import quill.command.commands.CommandPackages;
 import quill.command.commands.CommandRepositories;
@@ -30,6 +31,7 @@ public class QCommander extends Commander<QCommander, CommandSource> {
 		command(new CommandPackages());
 		command(new CommandRepositories());
 		command(new CommandSearch());
+		command(new CommandFetch());
 	}
 
 	@Override

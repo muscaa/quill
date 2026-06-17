@@ -11,4 +11,6 @@ public interface IRepository<P extends IPackage> {
 	void refresh();
 
 	String getNamespace();
+	
+	int getTotalPackages();
 }

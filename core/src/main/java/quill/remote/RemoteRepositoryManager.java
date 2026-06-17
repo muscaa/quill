@@ -9,11 +9,23 @@ import java.util.LinkedList;
 import java.util.List;
 import java.util.Map;
 
+import fluff.files.FileHelper;
 import quill.AbstractRepositoryManager;
 import quill.QFiles;
 
 public class RemoteRepositoryManager extends AbstractRepositoryManager<RemotePackage, RemoteRepository> {
 
+	public void fetch() {
+		refresh();
+		FileHelper.deleteContents(QFiles.DB_REPOS);
+		
+		for (Map.Entry<String, List<RemoteRepository>> e: repositories.entrySet()) {
+			for (RemoteRepository repo : e.getValue()) {
+				repo.fetch();
+			}
+		}
+	}
+	
 	@Override
 	public void refresh() {
 		super.refresh();
