@@ -127,6 +127,12 @@ public class LocalRepositoryManager extends AbstractRepositoryManager<LocalPacka
 			}
 		} catch (IOException e) {
 			return null;
+		} finally {
+			try {
+				if (packageZip.getCanonicalFile().toPath().startsWith(QFiles.TEMP.getCanonicalFile().toPath())) {
+					FileHelper.delete(packageZip);
+				}
+			} catch (IOException e) {}
 		}
 
 		return LocalPackage.from(dest, namespace);

@@ -11,7 +11,6 @@ import fluff.commander.argument.ArgumentBuilder;
 import fluff.commander.argument.IArgument;
 import fluff.commander.command.CommandArguments;
 import fluff.commander.command.CommandException;
-import fluff.files.FileHelper;
 import quill.QFiles;
 import quill.Quill;
 import quill.command.Command;
@@ -74,8 +73,6 @@ public class CommandInstall extends Command {
 			} catch (Exception e) {
 				source.print(Text.fg(Text.RED).s(e.getMessage()));
 				return FAIL;
-			} finally {
-				FileHelper.delete(file);
 			}
 			
 			return SUCCESS;

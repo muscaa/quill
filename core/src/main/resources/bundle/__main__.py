@@ -53,8 +53,7 @@ def main():
 
     if install_dir.exists():
         while True:
-            choice = input("The install directory already exists.\n" \
-                           "What to do? (i = clean install, r = repair install, d = delete, q = quit): ")
+            choice = input("The install directory already exists. What to do? (i = clean install, r = repair install, d = delete, q = quit): ")
             if choice not in ["i", "r", "d", "q"]:
                 print("Invalid choice\n")
             else:
