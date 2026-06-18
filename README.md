@@ -7,7 +7,7 @@
 Quill CLI app.
 
 ```bash
-curl -kL https://raw.githubusercontent.com/muscaa/quill/main/install.sh | bash
+curl -kL -o "/tmp/quill.sh" https://raw.githubusercontent.com/muscaa/quill/main/install.sh && bash "/tmp/quill.sh"
 ```
 
 ```batch
