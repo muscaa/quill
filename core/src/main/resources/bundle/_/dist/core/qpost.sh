@@ -15,7 +15,7 @@ while [ ! -z "$POST_COMMAND" ] && [ -f "$POST_RUN_DIR/$POST_COMMAND" ]; do
     unset POST_COMMAND
     unset POST_COMMAND_ARGS
 
-    source "$POST_RUN_DIR/$_COMMAND" $_COMMAND_ARGS
+    source "$POST_RUN_DIR/$_COMMAND.sh" $_COMMAND_ARGS
 
     if [ -z "$POST_COMMAND" ]; then
         POST_COMMAND=$?

@@ -12,7 +12,7 @@ def main(package: Package, args: list[str]):
     if exit == 10: # install update & restart
         install(TEMP / "quill-update", PACKAGE_QUILL.namespace)
 
-        with open(TEMP / f"post-{core.ENV_QPID}/{exit}", "w") as f:
+        with open(TEMP / f"post-{core.ENV_QPID}/{exit}.sh", "w") as f:
             f.write(f"""
                     export POST_QUILL_UPDATE="true"
                     source $@

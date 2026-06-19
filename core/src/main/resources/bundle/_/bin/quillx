@@ -1,9 +1,9 @@
 #!/bin/bash
 
-source "$(dirname $0)/../dist/core/qinit"
+source "$(dirname $0)/../dist/core/qinit.sh"
 
-source "$Q_DIST_CORE/qpre"
-source "$Q_DIST_CORE/qcore" run packages/default/muscaa@quill bin.quillx $@
+source "$Q_DIST_CORE/qpre.sh"
+source "$Q_DIST_CORE/qcore.sh" run packages/default/muscaa@quill bin.quillx $@
 
 POST_COMMAND=$?
-source "$Q_DIST_CORE/qpost" "$Q_DIST_CORE/qcore" run packages/default/muscaa@quill bin.quillx $@
+source "$Q_DIST_CORE/qpost.sh" "$Q_DIST_CORE/qcore.sh" run packages/default/muscaa@quill bin.quillx $@
