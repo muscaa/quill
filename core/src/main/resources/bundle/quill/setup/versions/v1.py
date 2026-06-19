@@ -32,22 +32,22 @@ class SetupV1:
 
             self.wizard._add(owns.Owns(_path))
 
-    def bins(self, paths: list[str | Path]):
+    def bins(self, paths: list[str | Path], newline: copy.NewLine = "lf"):
         for path in paths:
             _src = _resolve(self.wizard.root_dir, self.wizard.dir, path)
             _dest = self.wizard.root_dir / "bin" / _src.name
 
             self.wizard._add(owns.Owns(_dest))
-            self.wizard._add(copy.Copy(_src, _dest, True))
+            self.wizard._add(copy.Copy(_src, _dest, True, newline))
             self.wizard._add(chmod.Chmod(_dest, exec=True))
 
-    def copy(self, src: str | Path, dest: str | Path | None = None, clean: bool = True, overwrite: bool = True):
+    def copy(self, src: str | Path, dest: str | Path | None = None, clean: bool = True, overwrite: bool = True, newline: copy.NewLine = "auto"):
         _src = _resolve(self.wizard.root_dir, self.wizard.dir, src)
         _dest = _resolve(self.wizard.root_dir, self.wizard.package_dir, src if dest is None else dest)
 
         if clean and overwrite:
             self.wizard._add(delete.Delete(_dest, False))
-        self.wizard._add(copy.Copy(_src, _dest, overwrite))
+        self.wizard._add(copy.Copy(_src, _dest, overwrite, newline))
     
     def delete(self, path: str | Path):
         _path = _resolve(self.wizard.root_dir, self.wizard.package_dir, path)

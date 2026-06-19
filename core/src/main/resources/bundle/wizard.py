@@ -24,7 +24,7 @@ def install():
         "@/config/repositories.conf",
     ])
     v1.copy("_/core/", "@/core/")
-    v1.copy("_/dist/core/", "@/dist/core/")
+    v1.copy("_/dist/core/", "@/dist/core/", newline="lf")
     v1.copy("_/main.py", "@/main.py")
     v1.copy("_/config/repositories.conf", "@/config/repositories.conf", overwrite=False)
 
