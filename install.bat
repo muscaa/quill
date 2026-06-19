@@ -1,5 +1,5 @@
 @echo off
-setlocal
+setlocal EnableDelayedExpansion
 
 set "TMP_ZIP=%TEMP%\quill.%RANDOM%%RANDOM%.zip"
 
