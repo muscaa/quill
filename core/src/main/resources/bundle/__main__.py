@@ -79,7 +79,7 @@ def install_env(env: dict[str, object], path: list[Path]):
 
             lines = [
                 UNIX_BEGIN,
-                f"[ -f \"$HOME/{UNIX_SH}\"] && . \"$HOME/{UNIX_SH}\"",
+                f"[ -f \"$HOME/{UNIX_SH}\" ] && . \"$HOME/{UNIX_SH}\"",
                 UNIX_END,
             ]
 
