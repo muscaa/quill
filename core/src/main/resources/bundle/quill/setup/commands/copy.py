@@ -34,12 +34,12 @@ class Copy(Command):
         if self.newline == "auto":
             shutil.copy(src, dest)
         elif self.newline == "lf":
-            with open(src, "r", newline="") as f:
+            with open(src, "r") as f:
                 content = f.read()
             with open(dest, "w", newline="\n") as f:
                 f.write(content)
         elif self.newline == "crlf":
-            with open(src, "r", newline="") as f:
+            with open(src, "r") as f:
                 content = f.read()
             with open(dest, "w", newline="\r\n") as f:
                 f.write(content)
