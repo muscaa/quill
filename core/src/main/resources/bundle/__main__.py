@@ -11,6 +11,7 @@ install_dir = Path.home() / ".quill"
 
 WIN_MANAGED = "QUILL_MANAGED"
 UNIX_SH = ".quill.sh"
+UNIX_SH_PATH = Path.home() / UNIX_SH
 UNIX_TARGETS = [
     Path.home() / ".profile",
     Path.home() / ".bash_profile",
@@ -52,6 +53,7 @@ def install_env(env: dict[str, object], path: list[Path]):
                         new_managed.append(m)
                 winreg.SetValueEx(key, "Path", 0, winreg.REG_EXPAND_SZ, ";".join(new_path))
 
+            new_managed = sorted(m for m in new_managed if m)
             winreg.SetValueEx(key, WIN_MANAGED, 0, winreg.REG_SZ, ";".join(new_managed))
 
         HWND_BROADCAST = 0xFFFF
@@ -63,7 +65,6 @@ def install_env(env: dict[str, object], path: list[Path]):
         )
     else:
         sh: list[str] = []
-        sh_path = Path.home() / UNIX_SH
 
         if env:
             for name, value in env.items():
@@ -71,7 +72,7 @@ def install_env(env: dict[str, object], path: list[Path]):
         if path:
             sh.append(f"export PATH=\"{":".join(str(value) for value in path)}:$PATH\"")
 
-        sh_path.write_text("\n".join(sh) + "\n")
+        UNIX_SH_PATH.write_text("\n".join(sh) + "\n")
 
         for target in UNIX_TARGETS:
             if not target.exists():
@@ -111,17 +112,14 @@ def uninstall_env():
             new_path: list[str] = [value for value in path_query.split(";")]
 
             for m in managed:
-                type, value = m.split(":", 1)
-                if type == "var":
-                    try:
+                try:
+                    type, value = m.split(":", 1)
+                    if type == "var":
                         winreg.DeleteValue(key, value)
-                    except:
-                        pass
-                elif type == "path":
-                    try:
+                    elif type == "path":
                         new_path.remove(value)
-                    except:
-                        pass
+                except:
+                    pass
                 
             winreg.SetValueEx(key, "Path", 0, winreg.REG_EXPAND_SZ, ";".join(new_path))
             winreg.DeleteValue(key, WIN_MANAGED)
@@ -134,6 +132,8 @@ def uninstall_env():
             SMTO_ABORTIFHANG, 5000, ctypes.byref(ctypes.c_ulong())
         )
     else:
+        UNIX_SH_PATH.unlink(missing_ok=True)
+
         for target in UNIX_TARGETS:
             if not target.exists():
                 continue
