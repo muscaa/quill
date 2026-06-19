@@ -18,7 +18,7 @@ def main():
         print(f"Package '{split[0]}' not found")
         return
 
-    package_command = split[1] if len(split) == 2 else package.id
+    package_command = split[1] if len(split) == 2 else package.id.replace("-", "_")
 
     result = package.run(package_command, ARGS.copy())
     if not result:
