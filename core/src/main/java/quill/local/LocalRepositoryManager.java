@@ -10,7 +10,10 @@ import java.util.Arrays;
 import java.util.Comparator;
 import java.util.HashMap;
 import java.util.LinkedHashMap;
+import java.util.LinkedList;
+import java.util.List;
 import java.util.Map;
+import java.util.Objects;
 import java.util.zip.ZipEntry;
 import java.util.zip.ZipInputStream;
 
@@ -27,6 +30,35 @@ import quill.Quill;
 import quill.info.Tag;
 
 public class LocalRepositoryManager extends AbstractRepositoryManager<LocalPackage, LocalRepository> {
+	
+	public Process start(String bin, String... args) throws IOException {
+		Map<String, OS> extensions = Map.of(
+				"null", OS.LINUX,
+				".sh", OS.LINUX,
+				".exe", OS.WINDOWS,
+				".cmd", OS.WINDOWS,
+				".bat", OS.WINDOWS);
+		String foundBin = bin;
+		for (File file : QFiles.BIN.listFiles((file) -> FileHelper.getNameNoExtension(file).equals(bin))) {
+			String ext = FileHelper.getExtension(file);
+			OS extOs = extensions.get(Objects.toString(ext));
+			if (extOs == null) continue;
+			
+			if (extOs == OS.SYSTEM || (OS.SYSTEM != OS.WINDOWS && extOs != OS.WINDOWS)) {
+				foundBin = file.getName();
+				break;
+			}
+		}
+		
+		List<String> command = new LinkedList<>();
+		command.add(foundBin);
+		for (String arg : args) {
+			command.add(arg);
+		}
+		ProcessBuilder builder = new ProcessBuilder(command).inheritIO();
+		Process process = builder.start();
+		return process;
+	}
 
 	public void install(File file, String namespace) throws Exception {
 		if (!QEnv.POST_QUILL_UPDATE) {
@@ -47,11 +79,8 @@ public class LocalRepositoryManager extends AbstractRepositoryManager<LocalPacka
 
 				System.exit(10);
 			}
-
-			ProcessBuilder builder = new ProcessBuilder("quillx", qtag.toString() + ":install",
-					p.getDir().getAbsolutePath(), namespace).inheritIO();
-			Process process = builder.start();
-			int exit = process.waitFor();
+			
+			int exit = start("quillx", qtag + ":install", p.getDir().getAbsolutePath(), namespace).waitFor();
 			FileHelper.delete(p.getDir());
 
 			if (exit != 0) {
