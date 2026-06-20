@@ -31,7 +31,7 @@ import quill.info.Tag;
 
 public class LocalRepositoryManager extends AbstractRepositoryManager<LocalPackage, LocalRepository> {
 	
-	public Process start(String bin, String... args) throws IOException {
+	public Process start(String bin, Object... args) throws IOException {
 		Map<String, OS> extensions = Map.of(
 				"null", OS.LINUX,
 				".sh", OS.LINUX,
@@ -52,8 +52,8 @@ public class LocalRepositoryManager extends AbstractRepositoryManager<LocalPacka
 		
 		List<String> command = new LinkedList<>();
 		command.add(foundBin);
-		for (String arg : args) {
-			command.add(arg);
+		for (Object arg : args) {
+			command.add(Objects.toString(arg));
 		}
 		ProcessBuilder builder = new ProcessBuilder(command).inheritIO();
 		Process process = builder.start();
@@ -88,6 +88,19 @@ public class LocalRepositoryManager extends AbstractRepositoryManager<LocalPacka
 			}
 		} else {
 			FileHelper.delete(new File(QFiles.TEMP, "quill-update"));
+		}
+	}
+	
+	public void uninstall(LocalPackage p) throws Exception {
+		Tag qtag = Tag.of(Quill.INSTANCE.quillPackage);
+		Tag tag = Tag.of(p);
+		if (tag.equals(qtag)) {
+			System.exit(11);
+		}
+		
+		int exit = start("quillx", qtag + ":uninstall", tag).waitFor();
+		if (exit != 0) {
+			throw new Exception("Package uninstall command returned " + exit);
 		}
 	}
 

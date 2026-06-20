@@ -12,6 +12,7 @@ import quill.command.commands.CommandInstall;
 import quill.command.commands.CommandPackages;
 import quill.command.commands.CommandRepositories;
 import quill.command.commands.CommandSearch;
+import quill.command.commands.CommandUninstall;
 
 public class QCommander extends Commander<QCommander, CommandSource> {
 
@@ -28,6 +29,7 @@ public class QCommander extends Commander<QCommander, CommandSource> {
 		argument(ARG_VERSION);
 
 		command(new CommandInstall());
+		command(new CommandUninstall());
 		command(new CommandPackages());
 		command(new CommandRepositories());
 		command(new CommandSearch());

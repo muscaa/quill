@@ -3,7 +3,7 @@ import core
 from quill.package import Package
 from quill.bootstrap import java
 from quill.files import TEMP
-from quill.setup import install
+from quill.setup import install, uninstall
 from quill.globals import PACKAGE_QUILL
 
 def main(package: Package, args: list[str]):
@@ -26,4 +26,14 @@ def main(package: Package, args: list[str]):
                     set "POST_COMMAND=%errorlevel%"
                     set "POST_QUILL_UPDATE="
                     """)
+        sys.exit(exit)
+    elif exit == 11: # uninstall
+        uninstall(package)
+
+        with open(TEMP / f"post-{core.ENV_QPID}/{exit}.sh", "w") as f:
+            f.write(f"""
+                    """) # maybe delete everything in .quill? also unset env vars
+        with open(TEMP / f"post-{core.ENV_QPID}/{exit}.cmd", "w") as f:
+            f.write(f"""
+                    """) # same here
         sys.exit(exit)
