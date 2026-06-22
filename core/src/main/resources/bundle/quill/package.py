@@ -37,6 +37,14 @@ class Package:
         
         add_library(path)
 
+        try:
+            from quill.setup import requirements_resolve
+            
+            requirements_resolve(self)
+        except Exception as e:
+            print(str(e))
+            return False
+
         return True
 
     def get_path(self) -> Path:

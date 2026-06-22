@@ -181,8 +181,8 @@ def repair():
         native_files.HOME = install_dir
         native_files.PACKAGES = install_dir / "packages"
 
-        from quill.setup import install as native_install
-        native_install(Path(tmp), "default")
+        from quill.setup import wizard_install
+        wizard_install(Path(tmp), "default")
 
     print("Done!")
     add_path()

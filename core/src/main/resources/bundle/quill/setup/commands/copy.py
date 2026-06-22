@@ -16,7 +16,7 @@ class Copy(Command):
         self.newline = newline
 
     def can_execute(self):
-        return owns.owns(self.wizard.root_dir, self.dest, self.wizard.info.tag)
+        return owns.owns(self.manager.root_dir, self.dest, self.manager.info.tag)
 
     def execute(self):
         if not self.overwrite and self.dest.exists():

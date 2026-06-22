@@ -14,7 +14,7 @@ class Chmod(Command):
         self.exec = exec
     
     def can_execute(self):
-        return owns.owns(self.wizard.root_dir, self.path, self.wizard.info.tag)
+        return owns.owns(self.manager.root_dir, self.path, self.manager.info.tag)
     
     def execute(self):
         mode = os.stat(self.path).st_mode

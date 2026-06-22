@@ -1,7 +1,7 @@
 from pathlib import Path
 
 from quill.package import Package
-from quill.setup import uninstall
+from quill.setup import wizard_uninstall
 
 def main(package: Package, args: list[str]):
     if len(args) != 1:
@@ -11,4 +11,4 @@ def main(package: Package, args: list[str]):
     if not p:
         raise Exception("Package not found")
     
-    uninstall(p)
+    wizard_uninstall(p)

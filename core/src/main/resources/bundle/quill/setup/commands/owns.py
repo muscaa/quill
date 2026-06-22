@@ -65,11 +65,11 @@ class Owns(Command):
         self.path = path
     
     def can_execute(self):
-        return owns(self.wizard.root_dir, self.path, self.wizard.info.tag)
+        return owns(self.manager.root_dir, self.path, self.manager.info.tag)
     
     def execute(self):
-        owns_path = get_owns_path(self.wizard.root_dir, self.path)
+        owns_path = get_owns_path(self.manager.root_dir, self.path)
         if owns_path and not owns_path.exists():
             owns_path.parent.mkdir(parents=True, exist_ok=True)
             with open(owns_path, "w") as f:
-                f.write(self.wizard.info.tag)
+                f.write(self.manager.info.tag)

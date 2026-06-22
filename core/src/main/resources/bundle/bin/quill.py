@@ -3,14 +3,14 @@ import core
 from quill.package import Package
 from quill.bootstrap import java
 from quill.files import TEMP
-from quill.setup import install, uninstall
+from quill.setup import wizard_install, wizard_uninstall
 from quill.globals import PACKAGE_QUILL
 
 def main(package: Package, args: list[str]):
     exit = java.run(package, "quill.Quill", args.copy())
     
     if exit == 10: # install update & restart
-        install(TEMP / "quill-update", PACKAGE_QUILL.namespace)
+        wizard_install(TEMP / "quill-update", PACKAGE_QUILL.namespace)
 
         with open(TEMP / f"post-{core.ENV_QPID}/{exit}.sh", "w") as f:
             f.write(f"""
@@ -28,7 +28,7 @@ def main(package: Package, args: list[str]):
                     """)
         sys.exit(exit)
     elif exit == 11: # uninstall
-        uninstall(package)
+        wizard_uninstall(package)
 
         with open(TEMP / f"post-{core.ENV_QPID}/{exit}.sh", "w") as f:
             f.write(f"""

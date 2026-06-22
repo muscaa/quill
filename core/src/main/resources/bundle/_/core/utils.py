@@ -8,10 +8,9 @@ def add_library(path: Path):
         sys.path.insert(0, path_str)
 
 def load_module(package_path: Path, module_name: str, cache: bool = True):
-    if module_name in sys.modules:
-        return sys.modules[module_name]
-
     if cache:
+        if module_name in sys.modules:
+            return sys.modules[module_name]
         add_library(package_path)
     
     module_path = package_path / f"{"/".join(module_name.split("."))}.py"

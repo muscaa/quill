@@ -11,7 +11,7 @@ class Delete(Command):
         self.unowns = unowns
     
     def can_execute(self):
-        return owns.owns(self.wizard.root_dir, self.path, self.wizard.info.tag)
+        return owns.owns(self.manager.root_dir, self.path, self.manager.info.tag)
     
     def execute(self):
         if self.path.is_dir():
@@ -20,6 +20,6 @@ class Delete(Command):
             self.path.unlink(missing_ok=True)
         
         if self.unowns:
-            owns_path = owns.get_owns_path(self.wizard.root_dir, self.path, direct=True)
+            owns_path = owns.get_owns_path(self.manager.root_dir, self.path, direct=True)
             if owns_path:
                 owns_path.unlink(missing_ok=True)
