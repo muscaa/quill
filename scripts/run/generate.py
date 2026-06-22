@@ -1,5 +1,6 @@
 import shutil
 import json
+import subprocess
 
 import __about__ as a
 from scripts.files import BUILD_GENERATED
@@ -20,3 +21,8 @@ def run():
     core.mkdir(parents=True, exist_ok=True)
     core_version_txt = core / "version.txt"
     core_version_txt.write_text(a.VERSION)
+
+    libs = BUILD_GENERATED / "libs"
+    libs.mkdir(parents=True, exist_ok=True)
+    libs_pip_txt = libs / "pip.txt"
+    subprocess.run(["uv", "export", "--frozen", "--no-dev", "--no-emit-project", "--no-header", "--no-hashes", "-o", libs_pip_txt])

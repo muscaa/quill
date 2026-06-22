@@ -2,8 +2,9 @@ from quill.setup.versions import V1
 
 def install():
     v1 = V1(__file__)
-    v1.copy("wizard.py")
     v1.copy("package.json")
+    v1.copy("wizard.py")
+    v1.copy("requirements.py")
 
     v1.bins([
         "_/bin/quill",
@@ -14,6 +15,7 @@ def install():
 
     v1.copy("bin/")
     v1.copy("quill/")
+    v1.copy("libs/")
     v1.copy("bootstrap4j/")
     v1.copy("java/")
 
@@ -30,8 +32,9 @@ def install():
 
 def uninstall():
     v1 = V1(__file__)
-    v1.delete("wizard.py")
     v1.delete("package.json")
+    v1.delete("wizard.py")
+    v1.delete("requirements.py")
 
     v1.delete("@/bin/quill")
     v1.delete("@/bin/quill.cmd")
@@ -40,6 +43,7 @@ def uninstall():
 
     v1.delete("bin/")
     v1.delete("quill/")
+    v1.delete("libs/")
     v1.delete("bootstrap4j/")
     v1.delete("java/")
 

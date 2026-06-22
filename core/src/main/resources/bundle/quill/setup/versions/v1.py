@@ -1,7 +1,7 @@
 from pathlib import Path
 
 from quill.setup import SetupManager
-from quill.setup.commands import owns, copy, delete, chmod
+from quill.setup.commands import owns, copy, delete, chmod, download
 
 def _resolve_prefix(path: str | Path, prefix: str) -> Path | None:
     path_str = str(path)
@@ -52,3 +52,9 @@ class SetupV1:
         _path = self.resolve(path)
 
         self.manager._add(delete.Delete(_path, True))
+
+    def download(self, dir: str | Path, mode: download.Mode, resources: list[str]):
+        _dir = self.resolve(dir)
+
+        for resource in resources:
+            self.manager._add(download.Download(_dir, mode, resource))
