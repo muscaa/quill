@@ -1,7 +1,10 @@
 plugins {
     `java-platform`
+    id("quill.about")
     id("quill.publishing")
 }
+
+val about: Map<String, String> by extra
 
 javaPlatform {
     allowDependencies()
@@ -14,39 +17,13 @@ dependencies {
 
 mavenPublishing {
 	pom {
-		name.set("Quill")
-		description.set("Quill CLI app")
+		name.set(about["name"])
+		description.set(about["description"])
 	}
 }
 
-val generatePackageJson = tasks.register("generatePackageJson") {
-	val outputFile = layout.buildDirectory.file("quill/generated/package.json")
-	outputs.file(outputFile)
-	
-	doLast {
-		val file = outputFile.get().asFile
-		file.parentFile.mkdirs()
-		file.writeText(
-			"""
-			{
-				"id": "${project.name}",
-				"author": "muscaa",
-				"version": "${project.version}",
-				"description": "..."
-			}
-			""".trimIndent()
-		)
-	}
-}
-
-tasks.register<Zip>("bundle") {
-    group = "quill"
-    description = "Bundles the project into an installable quill java package."
-
-    destinationDirectory.set(layout.buildDirectory.dir("quill/bundle"))
-    archiveFileName.set("${project.name}-bundle.zip")
-    
-    from(generatePackageJson)
+tasks.register<Sync>("preBundle") {
+    into(layout.buildDirectory.dir("quill/pre-bundle"))
 
     subprojects {
         val preBundleTask = tasks.named("preBundle")

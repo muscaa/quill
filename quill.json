@@ -1,10 +1,8 @@
 {
-    "$schema": "",
     "install": {
         "run": {
-            "win": "gradlew.bat bundle",
-            "*": "./gradlew bundle"
+            "*": "uv run build"
         },
-        "from": "build/quill/bundle/quill-bundle.zip"
+        "from": "build/quill-bundle.zip"
     }
 }

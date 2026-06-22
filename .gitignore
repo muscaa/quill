@@ -1,15 +1,23 @@
-# Gradle & IDE
+# Gradle, Python & IDE
 .gradle/
+.venv/
+__pycache__/
 .settings/
+.vscode/
 .idea/
 .kotlin/
 .classpath
 .project
+*.py[oc]
+.egg-info
+uv.lock
 
 # OS
 .DS_Store
 
 # Project Specific
+/wheels/
+/dist/
 /bin/
 /build/
 /run/

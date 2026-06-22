@@ -1,7 +1,10 @@
 plugins {
-    id("quill.java-conventions")
+    id("quill.about")
+    id("quill.subproject")
     id("quill.publishing")
 }
+
+val about: Map<String, String> by extra
 
 dependencies {
 	bootstrap(project(":bootstrap"))
@@ -14,27 +17,13 @@ dependencies {
 
 mavenPublishing {
 	pom {
-		name.set("Quill Core")
-		description.set("Quill CLI app core")
+		name.set("${about["name"]} Core")
+		description.set("${about["description"]} core")
 	}
 }
 
 tasks.processResources {
     exclude("bundle/**")
-}
-
-val generateBundleResources = tasks.register("generateBundleResources") {
-	val outputDir = layout.buildDirectory.dir("quill/generated/bundle")
-	outputs.dir(outputDir)
-	
-	doLast {
-		val dir = outputDir.get().asFile
-		dir.mkdirs()
-		
-		val core = dir.resolve("_/core")
-		core.mkdirs()
-		core.resolve("version.txt").writeText("${project.version}")
-	}
 }
 
 tasks.register<Sync>("preBundle") {
@@ -49,7 +38,4 @@ tasks.register<Sync>("preBundle") {
                 .minus(configurations.bootstrap.get()))
         }
     }
-
-    from("src/main/resources/bundle")
-    from(generateBundleResources)
 }

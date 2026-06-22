@@ -1,9 +1,11 @@
 plugins {
-    id("quill.java-conventions")
+    id("quill.about")
+    id("quill.subproject")
     id("quill.publishing")
 	id("application")
 }
 
+val about: Map<String, String> by extra
 val mainClassName = "quill.bootstrap.QuillBootstrap"
 
 dependencies {
@@ -14,8 +16,8 @@ dependencies {
 
 mavenPublishing {
 	pom {
-		name.set("Quill Bootstrap")
-		description.set("Quill CLI app bootstrap")
+		name.set("${about["name"]} Bootstrap")
+		description.set("${about["description"]} bootstrap")
 	}
 }
 

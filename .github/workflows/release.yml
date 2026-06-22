@@ -3,11 +3,25 @@ on:
   push:
     tags:
       - "v*.*.*"
+
 jobs:
   publish:
     runs-on: ubuntu-latest
     steps:
       - uses: actions/checkout@v4
+
+      - name: Setup Python
+        uses: actions/setup-python@v6
+        with:
+          python-version: '3.13'
+
+      - name: Install uv
+        uses: astral-sh/setup-uv@08807647e7069bb48b6ef5acd8ec9567f424441b # v8.1.0
+        with:
+          version: "0.11.23"
+
+      - name: Sync
+        run: uv sync
       
       - name: Set up JDK 21
         uses: actions/setup-java@v4
@@ -23,11 +37,11 @@ jobs:
       - name: Setup Gradle
         uses: gradle/actions/setup-gradle@v5
 
-      - name: Make gradlew executable & display version
-        run: chmod +x ./gradlew && ./gradlew --version
+      - name: Display gradle version
+        run: uv run gradlew --version
 
       - name: Publish to Maven Central
-        run: ./gradlew publishToMavenCentral
+        run: uv run gradlew publishToMavenCentral
         env:
           ORG_GRADLE_PROJECT_mavenCentralUsername: ${{ secrets.CENTRAL_TOKEN_USERNAME }}
           ORG_GRADLE_PROJECT_mavenCentralPassword: ${{ secrets.CENTRAL_TOKEN_PASSWORD }}
