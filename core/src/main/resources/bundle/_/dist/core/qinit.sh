@@ -15,8 +15,3 @@ mkdir -p "$Q_CONFIG"
 
 Q_TEMP="$Q_HOME/temp"
 mkdir -p "$Q_TEMP"
-
-#
-# OTHER
-#
-QPID=$$

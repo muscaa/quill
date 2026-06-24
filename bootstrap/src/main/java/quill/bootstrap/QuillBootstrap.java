@@ -17,16 +17,15 @@ public class QuillBootstrap {
 	public static final List<String> LIBRARIES = new LinkedList<>();
 	public static final File QUILL;
 	public static final File HOME;
-	public static final int ENV_QPID;
-	public static final boolean ENV_QPOST;
+	
+	// set from python
+	public static PyQuill PY;
 
 	static {
 		try {
 			QUILL = new File(QuillBootstrap.class.getProtectionDomain().getCodeSource().getLocation().toURI())
 					.getParentFile().getParentFile();
 			HOME = QUILL.getParentFile().getParentFile().getParentFile();
-			ENV_QPID = Integer.parseInt(System.getenv("QPID"));
-			ENV_QPOST = Boolean.parseBoolean(System.getenv("QPOST"));
 		} catch (Exception e) {
 			throw new RuntimeException(e);
 		}
@@ -39,6 +38,8 @@ public class QuillBootstrap {
 		Method main = clazz.getDeclaredMethod("main", String[].class);
 		main.setAccessible(true);
 		main.invoke(null, new Object[] { args });
+		
+		PY.schedule("hello", "world?");
 	}
 
 	public static boolean addLibrary(File dir) {

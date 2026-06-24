@@ -16,9 +16,3 @@ if not exist "%Q_CONFIG%" mkdir "%Q_CONFIG%"
 
 set "Q_TEMP=%Q_HOME%\temp"
 if not exist "%Q_TEMP%" mkdir "%Q_TEMP%"
-
-::
-:: OTHER
-::
-call "%Q_DIST_CORE%\qpid.cmd"
-set "QPID=%errorlevel%"

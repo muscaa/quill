@@ -17,11 +17,6 @@ def run():
         "description": a.DESCRIPTION,
     }, indent=4))
 
-    core = BUILD_GENERATED / "_" / "core"
-    core.mkdir(parents=True, exist_ok=True)
-    core_version_txt = core / "version.txt"
-    core_version_txt.write_text(a.VERSION)
-
     libs = BUILD_GENERATED / "libs"
     libs.mkdir(parents=True, exist_ok=True)
     libs_pip_json = libs / "pip.json"

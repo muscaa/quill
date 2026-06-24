@@ -1,4 +1,5 @@
 from pathlib import Path
+
 from core.utils import load_module
 
 def execute():
@@ -10,10 +11,6 @@ def execute():
     
     module_name = ARGS.pop(0)
     
-    run(package_path, module_name)
-    pass
-
-def run(package_path: Path, module_name: str):
     module = load_module(package_path, module_name)
     if module:
         module.main()

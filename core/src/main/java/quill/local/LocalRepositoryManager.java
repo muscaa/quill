@@ -24,7 +24,6 @@ import fluff.json.JSON;
 import fluff.json.JSONObject;
 import fluff.platform.os.OS;
 import quill.AbstractRepositoryManager;
-import quill.QEnv;
 import quill.QFiles;
 import quill.Quill;
 import quill.info.Tag;
@@ -61,33 +60,29 @@ public class LocalRepositoryManager extends AbstractRepositoryManager<LocalPacka
 	}
 
 	public void install(File file, String namespace) throws Exception {
-		if (!QEnv.POST_QUILL_UPDATE) {
-			File packageZip = getInstallZip(file);
+		File packageZip = getInstallZip(file);
 
-			Tag qtag = Tag.of(Quill.INSTANCE.quillPackage);
-			LocalPackage p = extract(packageZip, namespace);
-			if (p == null) {
-				throw new Exception("Invalid package");
-			}
+		Tag qtag = Tag.of(Quill.INSTANCE.quillPackage);
+		LocalPackage p = extract(packageZip, namespace);
+		if (p == null) {
+			throw new Exception("Invalid package");
+		}
 
-			Tag tag = Tag.of(p);
-			if (tag.equals(qtag)) {
-				Folder quillUpdate = new Folder(QFiles.TEMP, "quill-update");
-				FileHelper.deleteContents(quillUpdate);
-				FileHelper.copy(p.getDir(), quillUpdate);
-				FileHelper.delete(p.getDir());
-
-				System.exit(10);
-			}
-			
-			int exit = start("quillx", qtag + ":install", p.getDir().getAbsolutePath(), namespace).waitFor();
+		Tag tag = Tag.of(p);
+		if (tag.equals(qtag)) {
+			Folder quillUpdate = new Folder(QFiles.TEMP, "quill-update");
+			FileHelper.deleteContents(quillUpdate);
+			FileHelper.copy(p.getDir(), quillUpdate);
 			FileHelper.delete(p.getDir());
 
-			if (exit != 0) {
-				throw new Exception("Package install command returned " + exit);
-			}
-		} else {
-			FileHelper.delete(new File(QFiles.TEMP, "quill-update"));
+//			System.exit(10); // TODO schedule to python instead
+		}
+		
+		int exit = start("quillx", qtag + ":install", p.getDir().getAbsolutePath(), namespace).waitFor();
+		FileHelper.delete(p.getDir());
+
+		if (exit != 0) {
+			throw new Exception("Package install command returned " + exit);
 		}
 	}
 	
@@ -95,7 +90,7 @@ public class LocalRepositoryManager extends AbstractRepositoryManager<LocalPacka
 		Tag qtag = Tag.of(Quill.INSTANCE.quillPackage);
 		Tag tag = Tag.of(p);
 		if (tag.equals(qtag)) {
-			System.exit(11);
+//			System.exit(11); // TODO schedule to python instead
 		}
 		
 		int exit = start("quillx", qtag + ":uninstall", tag).waitFor();
@@ -122,7 +117,7 @@ public class LocalRepositoryManager extends AbstractRepositoryManager<LocalPacka
 			String command = commands.getOrDefault(OS.SYSTEM, commands.get(OS.UNKNOWN));
 			String from = install.getString("from");
 
-			if (command != null && !QEnv.POST_QUILL_UPDATE) {
+			if (command != null) {
 				ProcessBuilder builder = new ProcessBuilder(StringArgumentInput.parseArgsFromString(command))
 						.directory(file).inheritIO();
 				Process process = builder.start();
