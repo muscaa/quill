@@ -1,18 +1,17 @@
-from typing import Literal
+from __future__ import annotations
+from abc import ABC, abstractmethod
 from pathlib import Path
 import sys
 import subprocess
+import zipfile
 
 from quill.setup import Command
 from quill.setup.commands import owns
 
-type Mode = Literal["pip"]
-
 class Download(Command):
-    def __init__(self, dir: Path, mode: Mode, resource: str):
+    def __init__(self, dir: Path, resource: Resource):
         super().__init__()
         self.dir = dir
-        self.mode = mode
         self.resource = resource
     
     def can_execute(self):
@@ -20,21 +19,38 @@ class Download(Command):
     
     def execute(self):
         self.dir.mkdir(parents=True, exist_ok=True)
+        self.resource.download(self.dir)
 
-        if self.mode == "pip":
-            self._download_pip()
-        else:
-            raise Exception(f"Download mode '{self.mode}' not implemented")
+class Resource(ABC):
+    def __init__(self):
+        super().__init__()
 
-    def _download_pip(self): # TODO resource needs to be more "specific", like {id}:{version} so i can get the id easier instead of reading output (which is very slow)
-        proc = subprocess.run([sys.executable, "-m", "pip", "download", self.resource, "-d", self.dir, "--only-binary=:all:", "--no-deps"], check=True, capture_output=True, text=True)
+    @abstractmethod
+    def download(self, dir: Path) -> None:
+        pass
+
+class ResourcePip(Resource):
+    def __init__(self, name: str, version: str):
+        super().__init__()
+        self.name = name
+        self.version = version
+
+    def download(self, dir: Path):
+        package_dir = dir / self.name
+        if package_dir.is_dir():
+            return
+
+        proc = subprocess.run([
+            sys.executable, "-m", "pip", "download", f"{self.name}=={self.version}", "-d", dir, "--only-binary=:all:", "--no-deps"
+            ], check=True, capture_output=True, text=True)
         lines = proc.stdout.split("\n")
         line_saved = [line for line in lines if line.startswith("Saved")]
         if len(line_saved) == 0:
-            return
+            raise Exception(f"Couldn't download pip resource {self.name}:{self.version}")
         
         _, saved = line_saved[0].split(" ", 1)
         saved_path = Path(saved)
-        print(f"Downloaded '{saved_path.name}'")
-
-        # TODO extract to "{id}/"
+        
+        with zipfile.ZipFile(saved_path, "r") as zf:
+            zf.extractall(package_dir)
+        saved_path.unlink()

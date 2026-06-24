@@ -24,5 +24,22 @@ def run():
 
     libs = BUILD_GENERATED / "libs"
     libs.mkdir(parents=True, exist_ok=True)
-    libs_pip_txt = libs / "pip.txt"
-    subprocess.run(["uv", "export", "--frozen", "--no-dev", "--no-emit-project", "--no-header", "--no-hashes", "-o", libs_pip_txt])
+    libs_pip_json = libs / "pip.json"
+    
+    proc = subprocess.run([
+        "uv", "export", "--frozen", "--no-dev", "--no-emit-workspace", "--no-header", "--no-hashes", "--no-annotate"
+        ], check=True, capture_output=True, text=True)
+    
+    pip = {}
+    for line in proc.stdout.split("\n"):
+        if not line:
+            continue
+
+        split = line.split("==")
+        if len(split) != 2:
+            continue
+
+        name, version = split
+        pip[name] = version
+
+    libs_pip_json.write_text(json.dumps(pip, indent=4))

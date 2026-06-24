@@ -1,7 +1,8 @@
 from pathlib import Path
+from collections.abc import Callable
 
 from quill.setup import SetupManager
-from quill.setup.commands import owns, copy, delete, chmod, download
+from quill.setup.commands import run, owns, copy, delete, chmod, download
 
 def _resolve_prefix(path: str | Path, prefix: str) -> Path | None:
     path_str = str(path)
@@ -24,6 +25,9 @@ class SetupV1:
         
         _parent_dir = dir or self.manager.package_dir
         return _parent_dir / _path
+    
+    def run(self, func_execute: Callable[[], None], func_can_execute: Callable[[], bool] | None = None):
+        self.manager._add(run.Run(func_execute, func_can_execute))
 
     def owns(self, paths: list[str | Path]):
         for path in paths:
@@ -53,8 +57,11 @@ class SetupV1:
 
         self.manager._add(delete.Delete(_path, True))
 
-    def download(self, dir: str | Path, mode: download.Mode, resources: list[str]):
-        _dir = self.resolve(dir)
+    def dl_pip(self, name: str, version: str):
+        return download.ResourcePip(name, version)
+
+    def downloads(self, resources: list[download.Resource], dir: str | Path | None = None):
+        _dir = self.resolve("." if dir is None else dir)
 
         for resource in resources:
-            self.manager._add(download.Download(_dir, mode, resource))
+            self.manager._add(download.Download(_dir, resource))

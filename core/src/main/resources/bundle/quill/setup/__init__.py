@@ -148,6 +148,11 @@ def wizard_install(dir: Path, namespace: str):
     install_result = installer.install()
     if not install_result:
         raise Exception(f"Failed to install package '{installer.info.tag}'")
+    
+    package = Package.find(installer.info.tag)
+    if package:
+        requirements_resolve(package)
+
     print(f"Done!")
 
 def wizard_uninstall(package: Package, remove: bool = True):
